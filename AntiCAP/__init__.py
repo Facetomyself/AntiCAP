@@ -142,7 +142,7 @@ class AntiCAP(object):
         # 分类识别出坐标 从左到右返回 识别出0 1 2 3 4 5 6 7 8 9 + - × ÷ = *  再计算
         pass
 
-    # 目标检测
+    # 目标点选
     def AntiCAP_Detection(self,detection_model_path: str, img_bytes: bytes):
         # 分类识别出坐标
         pass
