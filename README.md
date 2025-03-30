@@ -12,8 +12,14 @@
 
 # 📄 AntiCAP 文档
 
-<strong>对抗验证码</strong>
+<strong>用于对抗各种验证码</strong>
 
 </div>
+
+# 安装
+
+# 使用
+
+# 训练
 
 
