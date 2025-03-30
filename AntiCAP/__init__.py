@@ -1,8 +1,5 @@
 # coding=utf-8
 import warnings
-
-warnings.filterwarnings('ignore')
-
 import io
 import os
 import base64
@@ -13,6 +10,7 @@ from PIL import Image, ImageChops
 import numpy as np
 import cv2
 
+warnings.filterwarnings('ignore')
 
 def base64_to_image(img_base64):
     img_data = base64.b64decode(img_base64)
@@ -36,7 +34,7 @@ class AntiCAP(object):
         if show_ad:
             print("https://github.com/81NewArk/AntiCAP")
 
-
+    # 带带弟弟OCR
     def Ddddocr(self):
         pass
 
@@ -70,9 +68,8 @@ class AntiCAP(object):
                 end_x = x
         return image.crop([starttx, startty, end_x, end_y]), starttx, startty
 
-
     # 缺口滑块
-    def slide_match(self, target_bytes: bytes = None, background_bytes: bytes = None, simple_target: bool = False,flag: bool = False):
+    def Slide_Match(self, target_bytes: bytes = None, background_bytes: bytes = None, simple_target: bool = False,flag: bool = False):
         if not simple_target:
             try:
                 target, target_x, target_y = self.get_target(target_bytes)
@@ -106,7 +103,7 @@ class AntiCAP(object):
                 "target": [int(max_loc[0]), int(max_loc[1]), int(bottom_right[0]), int(bottom_right[1])]}
 
     # 阴影滑块
-    def slide_comparison(self, target_bytes: bytes = None, background_bytes: bytes = None):
+    def Slide_Comparison(self, target_bytes: bytes = None, background_bytes: bytes = None):
         target = Image.open(io.BytesIO(target_bytes)).convert("RGB")
         background = Image.open(io.BytesIO(background_bytes)).convert("RGB")
         image = ImageChops.difference(background, target)
@@ -130,3 +127,26 @@ class AntiCAP(object):
         return {
             "target": [start_x, start_y]
         }
+
+    # 文字识别
+    def AntiCAP_OCR(self,model_path: str, img_bytes: bytes):
+        # 分类识别出坐标 从左到右返回
+        pass
+
+    # 算术识别
+    def AntiCAP_Arithmetic(self,arithmetic_model_path: str, img_bytes: bytes):
+        # 分类识别出坐标 从左到右返回 识别出0 1 2 3 4 5 6 7 8 9 + - × ÷ = *  再计算
+        pass
+
+    # 目标检测
+    def AntiCAP_Detection(self,arithmetic_model_path: str, img_bytes: bytes):
+        # 分类识别出坐标
+        pass
+
+
+
+
+
+
+
+
