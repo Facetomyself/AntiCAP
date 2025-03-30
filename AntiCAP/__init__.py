@@ -71,6 +71,7 @@ class AntiCAP(object):
         return image.crop([starttx, startty, end_x, end_y]), starttx, startty
 
 
+    # 缺口滑块
     def slide_match(self, target_bytes: bytes = None, background_bytes: bytes = None, simple_target: bool = False,flag: bool = False):
         if not simple_target:
             try:
@@ -104,7 +105,7 @@ class AntiCAP(object):
                 "target_y": target_y,
                 "target": [int(max_loc[0]), int(max_loc[1]), int(bottom_right[0]), int(bottom_right[1])]}
 
-    # 滑块2
+    # 阴影滑块
     def slide_comparison(self, target_bytes: bytes = None, background_bytes: bytes = None):
         target = Image.open(io.BytesIO(target_bytes)).convert("RGB")
         background = Image.open(io.BytesIO(background_bytes)).convert("RGB")
