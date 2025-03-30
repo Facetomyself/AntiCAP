@@ -1,13 +1,13 @@
 # coding=utf-8
 
-import warnings
+
 import io
 import os
-
 import cv2
 import json
 import base64
 import pathlib
+import warnings
 import onnxruntime
 import numpy as np
 
@@ -146,11 +146,4 @@ class AntiCAP(object):
     def AntiCAP_Detection(self,detection_model_path: str, img_bytes: bytes):
         # 分类识别出坐标
         pass
-
-
-
-
-
-
-
 
