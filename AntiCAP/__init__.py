@@ -143,7 +143,7 @@ class AntiCAP(object):
         pass
 
     # 目标检测
-    def AntiCAP_Detection(self,arithmetic_model_path: str, img_bytes: bytes):
+    def AntiCAP_Detection(self,detection_model_path: str, img_bytes: bytes):
         # 分类识别出坐标
         pass
 
