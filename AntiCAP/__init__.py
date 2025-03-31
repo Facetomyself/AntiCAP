@@ -10,21 +10,14 @@ import pathlib
 import warnings
 import onnxruntime
 import numpy as np
-
+import torch
+from ultralytics import YOLO
 
 from PIL import Image, ImageChops
 
 warnings.filterwarnings('ignore')
 
-def base64_to_image(img_base64):
-    img_data = base64.b64decode(img_base64)
-    return Image.open(io.BytesIO(img_data))
 
-
-def get_img_base64(single_image_path):
-    with open(single_image_path, 'rb') as fp:
-        img_base64 = base64.b64encode(fp.read())
-        return img_base64.decode()
 
 
 class TypeError(Exception):
@@ -37,6 +30,7 @@ class AntiCAP(object):
     def __init__(self, use_gpu: bool = False, device_id: int = 0, show_ad=True):
         if show_ad:
             print("https://github.com/81NewArk/AntiCAP")
+
 
     # 带带弟弟OCR
     def Ddddocr(self):
@@ -134,13 +128,71 @@ class AntiCAP(object):
 
     # 文字识别
     def AntiCAP_OCR(self,model_path: str, img_bytes: bytes):
-        # 分类识别出坐标 从左到右返回
         pass
 
+
+
+
+
+
     # 算术识别
-    def AntiCAP_Arithmetic(self,arithmetic_model_path: str, img_bytes: bytes):
-        # 分类识别出坐标 从左到右返回 识别出0 1 2 3 4 5 6 7 8 9 + - × ÷ = *  再计算
-        pass
+    def Arithmetic(self, img_base64: str, arithmetic_model_path: str = '', use_gpu: bool = False):
+
+        arithmetic_model_path = arithmetic_model_path or os.path.join(os.path.dirname(__file__), 'Arithmetic.pt')
+        device = torch.device('cuda' if use_gpu else 'cpu')
+        model = YOLO(arithmetic_model_path)
+        model.to(device)
+
+        image_bytes = base64.b64decode(img_base64)
+        image = Image.open(io.BytesIO(image_bytes))
+        results = model(image)
+        boxes = results[0].boxes
+        names = results[0].names
+
+
+        result_dict = {}
+        for i in range(len(boxes)):
+            label_index = int(boxes[i].cls.item())
+            label = names[label_index]
+            coordinates = boxes[i].xywh[0].tolist()
+
+            left_x = int(coordinates[0] - coordinates[2] / 2)
+            left_y = int(coordinates[1] - coordinates[3] / 2)
+            right_x = int(coordinates[0] + coordinates[2] / 2)
+            right_y = int(coordinates[1] + coordinates[3] / 2)
+
+            if label not in result_dict:
+                result_dict[label] = []
+
+            result_dict[label].append([left_x, left_y, right_x, right_y])
+
+        json_result = json.dumps({"result": result_dict}, ensure_ascii=False)
+
+        data = json.loads(json_result)
+        result_dict = data["result"]
+
+        sorted_elements = []
+        for label, coordinates_list in result_dict.items():
+            for coordinates in coordinates_list:
+                left_x = coordinates[0]
+                sorted_elements.append((left_x, label))
+
+        sorted_elements.sort(key=lambda x: x[0])
+        sorted_labels = [label for _, label in sorted_elements]
+        return (''.join(sorted_labels))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # 目标点选
     def AntiCAP_Detection(self,detection_model_path: str, img_bytes: bytes):
