@@ -17,6 +17,9 @@ from PIL import Image, ImageChops
 
 warnings.filterwarnings('ignore')
 
+import logging
+
+
 
 
 
@@ -27,8 +30,9 @@ class TypeError(Exception):
 class AntiCAP(object):
 
     # 初始化
-    def __init__(self, use_gpu: bool = False, device_id: int = 0, show_ad=True):
+    def __init__(self, show_ad=True):
         if show_ad:
+            print("Author: 81NewArk")
             print("https://github.com/81NewArk/AntiCAP")
 
 
@@ -127,20 +131,16 @@ class AntiCAP(object):
         }
 
     # 文字识别
-    def AntiCAP_OCR(self,model_path: str, img_bytes: bytes):
+    def OCR(self,model_path: str, img_bytes: bytes):
         pass
-
-
-
-
-
 
     # 算术识别
     def Arithmetic(self, img_base64: str, arithmetic_model_path: str = '', use_gpu: bool = False):
+        logging.getLogger('ultralytics').setLevel(logging.WARNING)
 
         arithmetic_model_path = arithmetic_model_path or os.path.join(os.path.dirname(__file__), 'Arithmetic.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
-        model = YOLO(arithmetic_model_path)
+        model = YOLO(arithmetic_model_path,verbose=False)
         model.to(device)
 
         image_bytes = base64.b64decode(img_base64)
@@ -191,11 +191,7 @@ class AntiCAP(object):
 
 
 
-
-
-
     # 目标点选
-    def AntiCAP_Detection(self,detection_model_path: str, img_bytes: bytes):
-        # 分类识别出坐标
+    def Detection(self,detection_model_path: str, img_bytes: bytes):
         pass
 
