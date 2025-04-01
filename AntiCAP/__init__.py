@@ -40,55 +40,60 @@ class AntiCAP(object):
     def Ddddocr(self):
         pass
 
-    def get_target(self, img_bytes: bytes = None):
-        image = Image.open(io.BytesIO(img_bytes))
-        w, h = image.size
-        starttx = 0
-        startty = 0
-        end_x = 0
-        end_y = 0
-        for x in range(w):
-            for y in range(h):
-                p = image.getpixel((x, y))
-                if p[-1] == 0:
-                    if startty != 0 and end_y == 0:
-                        end_y = y
 
-                    if starttx != 0 and end_x == 0:
-                        end_x = x
-                else:
-                    if startty == 0:
-                        startty = y
-                        end_y = 0
-                    else:
-                        if y < startty:
-                            startty = y
-                            end_y = 0
-            if starttx == 0 and startty != 0:
-                starttx = x
-            if end_y != 0:
-                end_x = x
-        return image.crop([starttx, startty, end_x, end_y]), starttx, startty
 
     # 缺口滑块
-    def Slide_Match(self, target_bytes: bytes = None, background_bytes: bytes = None, simple_target: bool = False,flag: bool = False):
+    def Slide_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False, flag: bool = False):
+        def get_target(self, img_bytes: bytes = None):
+            image = Image.open(io.BytesIO(img_bytes))
+            w, h = image.size
+            starttx = 0
+            startty = 0
+            end_x = 0
+            end_y = 0
+            for x in range(w):
+                for y in range(h):
+                    p = image.getpixel((x, y))
+                    if p[-1] == 0:
+                        if startty != 0 and end_y == 0:
+                            end_y = y
+
+                        if starttx != 0 and end_x == 0:
+                            end_x = x
+                    else:
+                        if startty == 0:
+                            startty = y
+                            end_y = 0
+                        else:
+                            if y < startty:
+                                startty = y
+                                end_y = 0
+                if starttx == 0 and startty != 0:
+                    starttx = x
+                if end_y != 0:
+                    end_x = x
+            return image.crop([starttx, startty, end_x, end_y]), starttx, startty
+
+        def decode_base64_to_image(base64_string):
+            image_data = base64.b64decode(base64_string)
+            return cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_ANYCOLOR)
+
         if not simple_target:
             try:
-                target, target_x, target_y = self.get_target(target_bytes)
+                target, target_x, target_y = self.get_target(decode_base64_to_image(target_base64))
                 target = cv2.cvtColor(np.asarray(target), cv2.IMREAD_ANYCOLOR)
             except SystemError as e:
-                # SystemError: tile cannot extend outside image
                 if flag:
                     raise e
-                return self.slide_match(target_bytes=target_bytes,
-                                        background_bytes=background_bytes,
+                return self.slide_match(target_base64=target_base64,
+                                        background_base64=background_base64,
                                         simple_target=True, flag=True)
         else:
-            target = cv2.imdecode(np.frombuffer(target_bytes, np.uint8), cv2.IMREAD_ANYCOLOR)
+            target = decode_base64_to_image(target_base64)
             target_y = 0
             target_x = 0
 
-        background = cv2.imdecode(np.frombuffer(background_bytes, np.uint8), cv2.IMREAD_ANYCOLOR)
+        background = decode_base64_to_image(background_base64)
 
         background = cv2.Canny(background, 100, 200)
         target = cv2.Canny(target, 100, 200)
@@ -100,20 +105,27 @@ class AntiCAP(object):
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
         h, w = target.shape[:2]
         bottom_right = (max_loc[0] + w, max_loc[1] + h)
+
         return {"target_x": target_x,
                 "target_y": target_y,
                 "target": [int(max_loc[0]), int(max_loc[1]), int(bottom_right[0]), int(bottom_right[1])]}
 
     # 阴影滑块
-    def Slide_Comparison(self, target_bytes: bytes = None, background_bytes: bytes = None):
-        target = Image.open(io.BytesIO(target_bytes)).convert("RGB")
-        background = Image.open(io.BytesIO(background_bytes)).convert("RGB")
+    def Slide_Comparison(self, target_base64: str = None, background_base64: str = None):
+        def decode_base64_to_image(base64_string):
+            image_data = base64.b64decode(base64_string)
+            return Image.open(io.BytesIO(image_data)).convert("RGB")
+
+        target = decode_base64_to_image(target_base64)
+        background = decode_base64_to_image(background_base64)
+
         image = ImageChops.difference(background, target)
         background.close()
         target.close()
         image = image.point(lambda x: 255 if x > 80 else 0)
         start_y = 0
         start_x = 0
+
         for i in range(0, image.width):
             count = 0
             for j in range(0, image.height):
@@ -126,12 +138,18 @@ class AntiCAP(object):
             if count >= 5:
                 start_x = i + 2
                 break
+
         return {
             "target": [start_x, start_y]
         }
 
     # 文字识别
     def OCR(self,model_path: str, img_bytes: bytes):
+        """
+        :param model_path:
+        :param
+        :return:待开发
+        """
         pass
 
     # 算术识别
@@ -193,5 +211,11 @@ class AntiCAP(object):
 
     # 目标点选
     def Detection(self,detection_model_path: str, img_bytes: bytes):
+        """
+        :param detection_model_path:
+        :param img_bytes:
+        :return:
+        模型还在训练 等待开发
+        """
         pass
 

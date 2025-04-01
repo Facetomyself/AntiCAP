@@ -2,3 +2,4 @@ onnxruntime
 Pillow
 numpy<2.0.0
 opencv-python==3.4.16.59
+torch
