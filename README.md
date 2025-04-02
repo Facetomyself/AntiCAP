@@ -76,8 +76,18 @@ if __name__ == '__main__':
    
   ```
 
+# 模型训练
+
+<br>
+
+https://github.com/81NewArk/AntiCAP_trainer
+
+<br>
+<br>
+<br>
 
 # 🐧 QQ交流群
+
 <br>
 
 <div align="center">
@@ -105,9 +115,54 @@ if __name__ == '__main__':
 <br>
 <br>
 
+# 🫰 致谢名单
+<br>
 
-# 模型训练
+[1] Ddddocr作者 网名:sml2h3
 
-https://github.com/81NewArk/AntiCAP_trainer
+
+[2] 微信公众号 OneByOne 网名:十一姐
+
+
+[3] 苏州大学,苏州大学文正学院 计算机科学与技术学院 张文哲教授
+
+
+[4] 苏州大学,苏州大学文正学院 计算机科学与技术学院 王辉教授
+
+
+[5] 苏州市职业大学,苏州大学文正学院 计算机科学与技术学院 陆公正副教授
+
+
+[6] 武汉科锐软件安全教育机构 钱林松讲师 网名:Backer
+
+
+
+<br>
+<br>
+<br>
+
+# 📚 参考文献
+<br>
+
+
+
+
+[1] Github. 2025.03.28 https://github.com/sml2h3
+
+
+[2] Github. 2025.03.28 https://github.com/2833844911/
+
+
+[3] Bilibili. 2025.03.28 https://space.bilibili.com/308704191
+
+
+[4] Bilibili. 2025.03.28 https://space.bilibili.com/472467171
+
+
+[5] Ultralytics. 2025.03.28 https://docs.ultralytics.com/modes/train/
+
+
+[6] YRL's Blog. 2025.03.28 https://blog.2zxz.com/archives/icondetection
+
 
 
