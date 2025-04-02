@@ -49,7 +49,7 @@ torch pypi或torch官网下载
 ## ⬇️ 安装和使用
 <br>
 
-### 1️⃣ 安装项目
+### 安装项目
 
 ```
 
@@ -62,7 +62,7 @@ pip install -r requirements.txt
 <br>
 <br>
 
-### 2️⃣ 调用方法
+### 调用方法
 
 
 ```
