@@ -45,19 +45,16 @@ class AntiCAP(object):
                 print("Author: 81NewArk")
                 print("https://github.com/81NewArk/AntiCAP")
 
+    # DDDOCR
     def Ddddocr(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
 
         model_path = os.path.join(os.path.dirname(__file__), 'Ddddocr.onnx')
         session = onnxruntime.InferenceSession(model_path)
 
-        # 字符集定义
-        charset = ["", "省", "略"]
-
-        # 将 base64 编码的图片数据解码成图片
         img_data = base64.b64decode(img_base64)
         image = Image.open(io.BytesIO(img_data))
 
-        # 字符集：定义验证码中可能出现的字符
+
         charset = ["", "笤", "谴", "膀", "荔", "佰", "电", "臁", "矍", "同", "奇", "芄", "吠", "6",
                                   "曛", "荇", "砥", "蹅", "晃", "厄", "殣", "ｃ", "辱", "钋", "杻", "價", "眙", "鴿",
                                   "⒄", "裙",
@@ -1085,26 +1082,25 @@ class AntiCAP(object):
                                   "窭", "铌",
                                   "友", "唉", "怫", "荘"]
 
-        # 将 base64 编码的图片数据解码成图片
+
         img_data = base64.b64decode(img_base64)
         image = Image.open(io.BytesIO(img_data))
 
-        # 预处理图片
+
         image = image.resize((int(image.size[0] * (64 / image.size[1])), 64), Image.Resampling.LANCZOS).convert('L')
         image = np.array(image).astype(np.float32)
-        image = np.expand_dims(image, axis=0) / 255.  # 将图片缩放到[0, 1]区间
+        image = np.expand_dims(image, axis=0) / 255.
         image = (image - 0.5) / 0.5  # 数据标准化
 
-        # 推理
+
         ort_inputs = {'input1': np.array([image]).astype(np.float32)}
         ort_outs = session.run(None, ort_inputs)
 
         result = []
 
-        # 处理输出
+
         last_item = 0
         if not probability:
-            # 进行分类预测
             argmax_result = np.squeeze(np.argmax(ort_outs[0], axis=2))
             for item in argmax_result:
                 if item == last_item:
@@ -1116,7 +1112,6 @@ class AntiCAP(object):
 
             return ''.join(result)
         else:
-            # 如果需要返回概率分布
             ort_outs = ort_outs[0]
             ort_outs = np.exp(ort_outs) / np.sum(np.exp(ort_outs))
             ort_outs_sum = np.sum(ort_outs, axis=2)
@@ -1130,12 +1125,6 @@ class AntiCAP(object):
                 'probability': ort_outs_probability
             }
             return result
-
-
-
-
-
-
 
     # 缺口滑块
     def Slide_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False, flag: bool = False):
@@ -1239,12 +1228,7 @@ class AntiCAP(object):
         }
 
     # 文字识别
-    def OCR(self,model_path: str, img_bytes: bytes):
-        """
-        :param model_path:
-        :param
-        :return:待开发
-        """
+    def OCR(self, img_base64: str = None ,ocr_model_path: str=None):
         pass
 
     # 算术识别
