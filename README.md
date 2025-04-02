@@ -55,7 +55,7 @@ if __name__ == '__main__':
     print(result)
 
     # 滑块验证码  阴影滑块
-    result = Atc.Slide_Match(target_base64="",background_base64="")
+    result = Atc.Slide_Comparison(target_base64="",background_base64="")
    
   ```
 
