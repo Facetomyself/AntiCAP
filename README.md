@@ -39,9 +39,17 @@
 
 # 安装
 
-# 使用
+```bash
+
+git clone https://github.com/81NewArk/AntiCAP.git
+cd AntiCAP
 
 ```
+
+# 使用
+
+
+```main.py
 
 import AntiCAP
 
