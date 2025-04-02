@@ -60,6 +60,8 @@ if __name__ == '__main__':
   ```
 
 
-# 训练
+# 模型训练
+
+https://github.com/81NewArk/AntiCAP_trainer
 
 
