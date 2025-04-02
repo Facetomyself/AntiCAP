@@ -35,6 +35,8 @@
 ```
 python 3.8
 
+torch pypi或torch官网下载
+
 ```
 
 <br>
