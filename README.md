@@ -20,15 +20,15 @@
 <br>
 <br>
 
-# 通用OCR识别  over
+## 通用OCR识别  over
 
-# 算术验证码识别 over
+## 算术验证码识别 over
 
-# 缺口滑块 over
+## 缺口滑块 over
 
-# 阴影滑块 over
+## 阴影滑块 over
 
-# 文字点选
+## 文字点选
 
 <br>
 <br>
@@ -37,19 +37,22 @@
 <br>
 <br>
 
-# 安装
+# 安装和使用
 
-```bash
-
-git clone https://github.com/81NewArk/AntiCAP.git
-cd AntiCAP
+## 安装项目
 
 ```
 
-# 使用
+git clone https://github.com/81NewArk/AntiCAP.git
+cd AntiCAP
+pip install -r requirements.txt
+
+```
+
+## 使用方法
 
 
-```main.py
+```
 
 import AntiCAP
 
@@ -88,6 +91,19 @@ if __name__ == '__main__':
 <br>
 <br>
 
+# 🚬 请作者抽一包香香软软的利群
+<br>
+
+<div align="center">
+
+<img src="https://github.com/81NewArk/AntiCAP_trainer/raw/main/docs/Ali.png" alt="Ali" width="200" height="200">
+<img src="https://github.com/81NewArk/AntiCAP_trainer/blob/main/docs/Wx.png" alt="Wx" width="200" height="200">
+
+</div>
+
+<br>
+<br>
+<br>
 
 
 # 模型训练
