@@ -67,7 +67,6 @@ pip install -r requirements.txt
 
 
 ```
-
 import AntiCAP
 
 if __name__ == '__main__':
@@ -87,7 +86,6 @@ if __name__ == '__main__':
 
     # 滑块验证码  阴影滑块
     result = Atc.Slide_Comparison(target_base64="",background_base64="")
-   
   ```
 
 <br>
