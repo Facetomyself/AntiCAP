@@ -74,6 +74,22 @@ if __name__ == '__main__':
   ```
 
 
+# 🐧 QQ交流群
+<br>
+
+<div align="center">
+
+<img src="https://github.com/81NewArk/AntiCAP_trainer/raw/main/docs/QQ_Group.png" alt="QQGroup" width="200" height="200">
+
+</div>
+
+
+<br>
+<br>
+<br>
+
+
+
 # 模型训练
 
 https://github.com/81NewArk/AntiCAP_trainer
