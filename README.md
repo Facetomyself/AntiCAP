@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
 <img src="https://github.com/81NewArk/AntiCAP_trainer/raw/main/docs/logo.jpg" width="200" height="200">
 
-<strong>AntiCAP_trainer:https://github.com/81NewArk/AntiCAP_trainer</strong>
+<strong>AntiCAP_trainer : https://github.com/81NewArk/AntiCAP_trainer</strong>
 
 根据自身要求训练模型 无缝衔接下一个 下一个更乖。
 
