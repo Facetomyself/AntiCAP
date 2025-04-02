@@ -97,7 +97,12 @@ if __name__ == '__main__':
 
 <br>
 
-https://github.com/81NewArk/AntiCAP_trainer
+<div align="center">
+
+<img src="https://github.com/81NewArk/AntiCAP_trainer/raw/main/docs/logo.jpg">
+<strong>AntiCAP_trainer:https://github.com/81NewArk/AntiCAP_trainer</strong>
+
+</div>
 
 <br>
 <br>
