@@ -58,11 +58,7 @@ pip install -r requirements.txt
 
 ```
 
-<br>
-<br>
-
 ### 调用方法
-
 
 ```
 import AntiCAP
