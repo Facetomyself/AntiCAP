@@ -19,7 +19,13 @@
 
 </div>
 
+# 通用OCR识别  over
+
 # 算术验证码识别 over
+
+# 缺口滑块 over
+
+# 阴影滑块 over
 
 
 # 安装
