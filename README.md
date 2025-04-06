@@ -114,7 +114,7 @@ if __name__ == '__main__':
 
 <div align="center">
 
-<img src="https://github.com/81NewArk/AntiCAP_trainer/raw/main/docs/QQ_Group.png" alt="QQGroup" width="200" height="200">
+<img src="https://gitee.com/NewArk81/AntiCAP_trainer/raw/main/docs/QQ_Group.png" alt="QQGroup" width="200" height="200">
 
 </div>
 
@@ -128,8 +128,8 @@ if __name__ == '__main__':
 
 <div align="center">
 
-<img src="https://github.com/81NewArk/AntiCAP_trainer/raw/main/docs/Ali.png" alt="Ali" width="200" height="200">
-<img src="https://github.com/81NewArk/AntiCAP_trainer/blob/main/docs/Wx.png" alt="Wx" width="200" height="200">
+<img src="https://gitee.com/NewArk81/AntiCAP_trainer/raw/main/docs/Ali.png" alt="Ali" width="200" height="200">
+<img src="https://gitee.com/NewArk81/AntiCAP_trainer/raw/main/docs/Wx.png" alt="Wx" width="200" height="200">
 
 </div>
 
