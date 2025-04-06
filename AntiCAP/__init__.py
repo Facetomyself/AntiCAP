@@ -1300,12 +1300,16 @@ class AntiCAP(object):
         pass
 
     # 目标检测
-    def Detection(self,detection_model_path: str, img_bytes: bytes):
+    def Detection(self, img_base64:str = None,detection_model_path: str=''):
         """
         :param detection_model_path:
         :param img_bytes:
         :return:
         模型还在训练 等待开发
         """
+        pass
+
+    # 顺序点选 检测目标后用孪生模型比对后按顺序输出
+    def Sequ_Click(self, img_base64:str = None, detection_model_path:str='', twin_model_path:str=''):
         pass
 
