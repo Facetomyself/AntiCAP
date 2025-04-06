@@ -3,6 +3,7 @@
 
 import io
 import os
+import re
 import cv2
 import json
 import base64
@@ -1276,16 +1277,25 @@ class AntiCAP(object):
 
         sorted_elements.sort(key=lambda x: x[0])
         sorted_labels = [label for _, label in sorted_elements]
-        return (''.join(sorted_labels))
 
+        captcha_text = ''.join(sorted_labels)
+        result = None
 
+        if captcha_text:
+            if '=' in captcha_text:
+                expr = captcha_text.split('=')[0]
+            else:
+                expr = captcha_text
+            expr = expr.replace('×', '*').replace('÷', '/')
+            expr = re.sub(r'[^\d\+\-\*/]', '', expr)
+            try:
+                result = eval(expr)
+            except Exception as e:
+                print(f"表达式解析出错: {e}")
+        else:
+            print("[Anti-CAP] :识别失败，未获取到表达式")
 
-
-
-
-
-
-
+        return result
 
 
     # 目标点选
