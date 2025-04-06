@@ -39,12 +39,7 @@ class AntiCAP(object):
             print("Author: 81NewArk")
             print("https://github.com/81NewArk/AntiCAP")
 
-    class AntiCAP(object):
 
-        def __init__(self, show_ad=True):
-            if show_ad:
-                print("Author: 81NewArk")
-                print("https://github.com/81NewArk/AntiCAP")
 
     # DDDOCR
     def Ddddocr(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
@@ -1127,8 +1122,73 @@ class AntiCAP(object):
             }
             return result
 
+    # 算术识别
+    def Arithmetic(self, img_base64: str, arithmetic_model_path: str = '', use_gpu: bool = False):
+        logging.getLogger('ultralytics').setLevel(logging.WARNING)
+
+        arithmetic_model_path = arithmetic_model_path or os.path.join(os.path.dirname(__file__), 'Arithmetic.pt')
+        device = torch.device('cuda' if use_gpu else 'cpu')
+        model = YOLO(arithmetic_model_path,verbose=False)
+        model.to(device)
+
+        image_bytes = base64.b64decode(img_base64)
+        image = Image.open(io.BytesIO(image_bytes))
+        results = model(image)
+        boxes = results[0].boxes
+        names = results[0].names
+
+
+        result_dict = {}
+        for i in range(len(boxes)):
+            label_index = int(boxes[i].cls.item())
+            label = names[label_index]
+            coordinates = boxes[i].xywh[0].tolist()
+
+            left_x = int(coordinates[0] - coordinates[2] / 2)
+            left_y = int(coordinates[1] - coordinates[3] / 2)
+            right_x = int(coordinates[0] + coordinates[2] / 2)
+            right_y = int(coordinates[1] + coordinates[3] / 2)
+
+            if label not in result_dict:
+                result_dict[label] = []
+
+            result_dict[label].append([left_x, left_y, right_x, right_y])
+
+        json_result = json.dumps({"result": result_dict}, ensure_ascii=False)
+
+        data = json.loads(json_result)
+        result_dict = data["result"]
+
+        sorted_elements = []
+        for label, coordinates_list in result_dict.items():
+            for coordinates in coordinates_list:
+                left_x = coordinates[0]
+                sorted_elements.append((left_x, label))
+
+        sorted_elements.sort(key=lambda x: x[0])
+        sorted_labels = [label for _, label in sorted_elements]
+
+        captcha_text = ''.join(sorted_labels)
+        result = None
+
+        if captcha_text:
+            if '=' in captcha_text:
+                expr = captcha_text.split('=')[0]
+            else:
+                expr = captcha_text
+            expr = expr.replace('×', '*').replace('÷', '/')
+            expr = re.sub(r'[^\d\+\-\*/]', '', expr)
+            try:
+                result = eval(expr)
+            except Exception as e:
+                print(f"表达式解析出错: {e}")
+        else:
+            print("[Anti-CAP] :识别失败，未获取到表达式")
+
+        return result
+
     # 缺口滑块
-    def Slide_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False, flag: bool = False):
+    def Slider_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False, flag: bool = False):
         def get_target(self, img_bytes: bytes = None):
             image = Image.open(io.BytesIO(img_bytes))
             w, h = image.size
@@ -1196,7 +1256,7 @@ class AntiCAP(object):
                 "target": [int(max_loc[0]), int(max_loc[1]), int(bottom_right[0]), int(bottom_right[1])]}
 
     # 阴影滑块
-    def Slide_Comparison(self, target_base64: str = None, background_base64: str = None):
+    def Slider_Comparison(self, target_base64: str = None, background_base64: str = None):
         def decode_base64_to_image(base64_string):
             image_data = base64.b64decode(base64_string)
             return Image.open(io.BytesIO(image_data)).convert("RGB")
@@ -1231,71 +1291,6 @@ class AntiCAP(object):
     # 文字识别
     def OCR(self, img_base64: str = None ,ocr_model_path: str=None):
         pass
-
-    # 算术识别
-    def Arithmetic(self, img_base64: str, arithmetic_model_path: str = '', use_gpu: bool = False):
-        logging.getLogger('ultralytics').setLevel(logging.WARNING)
-
-        arithmetic_model_path = arithmetic_model_path or os.path.join(os.path.dirname(__file__), 'Arithmetic.pt')
-        device = torch.device('cuda' if use_gpu else 'cpu')
-        model = YOLO(arithmetic_model_path,verbose=False)
-        model.to(device)
-
-        image_bytes = base64.b64decode(img_base64)
-        image = Image.open(io.BytesIO(image_bytes))
-        results = model(image)
-        boxes = results[0].boxes
-        names = results[0].names
-
-
-        result_dict = {}
-        for i in range(len(boxes)):
-            label_index = int(boxes[i].cls.item())
-            label = names[label_index]
-            coordinates = boxes[i].xywh[0].tolist()
-
-            left_x = int(coordinates[0] - coordinates[2] / 2)
-            left_y = int(coordinates[1] - coordinates[3] / 2)
-            right_x = int(coordinates[0] + coordinates[2] / 2)
-            right_y = int(coordinates[1] + coordinates[3] / 2)
-
-            if label not in result_dict:
-                result_dict[label] = []
-
-            result_dict[label].append([left_x, left_y, right_x, right_y])
-
-        json_result = json.dumps({"result": result_dict}, ensure_ascii=False)
-
-        data = json.loads(json_result)
-        result_dict = data["result"]
-
-        sorted_elements = []
-        for label, coordinates_list in result_dict.items():
-            for coordinates in coordinates_list:
-                left_x = coordinates[0]
-                sorted_elements.append((left_x, label))
-
-        sorted_elements.sort(key=lambda x: x[0])
-        sorted_labels = [label for _, label in sorted_elements]
-
-        captcha_text = ''.join(sorted_labels)
-        result = None
-
-        if captcha_text:
-            if '=' in captcha_text:
-                expr = captcha_text.split('=')[0]
-            else:
-                expr = captcha_text
-            expr = expr.replace('×', '*').replace('÷', '/')
-            expr = re.sub(r'[^\d\+\-\*/]', '', expr)
-            try:
-                result = eval(expr)
-            except Exception as e:
-                print(f"表达式解析出错: {e}")
-        else:
-            print("[Anti-CAP] :识别失败，未获取到表达式")
-
-        return result
 
 
     # 目标点选
