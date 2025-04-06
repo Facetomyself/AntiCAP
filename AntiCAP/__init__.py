@@ -36,10 +36,17 @@ class AntiCAP(object):
 
     def __init__(self, show_ad=True):
         if show_ad:
-            print("Author: 81NewArk")
-            print("https://github.com/81NewArk/AntiCAP")
-
-
+            print('''-----------------------------------------------------------  
+|      _              _     _    ____      _      ____    |
+|     / \     _ __   | |_  (_)  / ___|    / \    |  _ \   |
+|    / _ \   | '_ \  | __| | | | |       / _ \   | |_) |  |
+|   / ___ \  | | | | | |_  | | | |___   / ___ \  |  __/   |
+|  /_/   \_\ |_| |_|  \__| |_|  \____| /_/   \_\ |_|      |                                                   
+-----------------------------------------------------------                                                       
+|         Github: https://github.com/81NewArk/AntiCAP     |
+|         Author: 81NewArk                                |
+|    Description: 开箱即用，对抗复杂验证码.                    |
+----------------------------------------------------------- ''')
 
     # DDDOCR
     def Ddddocr(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
