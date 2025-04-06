@@ -1299,8 +1299,7 @@ class AntiCAP(object):
     def OCR(self, img_base64: str = None ,ocr_model_path: str=None):
         pass
 
-
-    # 目标点选
+    # 目标检测
     def Detection(self,detection_model_path: str, img_bytes: bytes):
         """
         :param detection_model_path:
