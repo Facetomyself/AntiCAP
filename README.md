@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=logo.png alt="logo" width="200" height="200">
+<img src="https://gitee.com/NewArk81/AntiCAP/raw/main/logo.png" alt="logo" width="200" height="200">
 
 
 # AntiCAP
