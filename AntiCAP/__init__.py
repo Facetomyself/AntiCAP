@@ -1373,7 +1373,6 @@ class AntiCAP(object):
                 "target_y": target_y,
                 "target": [int(max_loc[0]), int(max_loc[1]), int(bottom_right[0]), int(bottom_right[1])]}
 
-
     # 阴影滑块
     def Slider_Comparison(self, target_base64: str = None, background_base64: str = None):
         def decode_base64_to_image(base64_string):
