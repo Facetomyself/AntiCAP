@@ -1406,6 +1406,3 @@ class AntiCAP(object):
         return {
             "target": [start_x, start_y]
         }
-
-
-
