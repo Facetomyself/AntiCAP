@@ -1,20 +1,20 @@
 # coding=utf-8
 
-
 import io
 import os
 import re
 import cv2
 import json
-import base64
-import pathlib
-import warnings
-import onnxruntime
 import torch
+import base64
 import logging
+import warnings
 import numpy as np
+import onnxruntime
 from ultralytics import YOLO
 from PIL import Image, ImageChops
+
+from skimage.metrics import structural_similarity as ssim
 
 
 
@@ -29,14 +29,14 @@ class TypeError(Exception):
 
 
 
-
-
-
 class AntiCAP(object):
+    logging.getLogger('ultralytics').setLevel(logging.WARNING)
+
 
     def __init__(self, show_ad=True):
         if show_ad:
-            print('''-----------------------------------------------------------  
+            print('''
+-----------------------------------------------------------  
 |      _              _     _    ____      _      ____    |
 |     / \     _ __   | |_  (_)  / ___|    / \    |  _ \   |
 |    / _ \   | '_ \  | __| | | | |       / _ \   | |_) |  |
@@ -45,11 +45,13 @@ class AntiCAP(object):
 -----------------------------------------------------------                                                       
 |         Github: https://github.com/81NewArk/AntiCAP     |
 |         Author: 81NewArk                                |
-|    Description: 开箱即用，对抗复杂验证码.                    |
+|    Description: 开箱即用 对抗复杂验证码.                    |
 ----------------------------------------------------------- ''')
 
+
+
     # DDDOCR
-    def Ddddocr(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
+    def OCR(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
 
         model_path = os.path.join(os.path.dirname(__file__), 'Ddddocr.onnx')
         session = onnxruntime.InferenceSession(model_path)
@@ -1131,8 +1133,6 @@ class AntiCAP(object):
 
     # 算术识别
     def Arithmetic(self, img_base64: str, arithmetic_model_path: str = '', use_gpu: bool = False):
-        logging.getLogger('ultralytics').setLevel(logging.WARNING)
-
         arithmetic_model_path = arithmetic_model_path or os.path.join(os.path.dirname(__file__), 'Arithmetic.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(arithmetic_model_path,verbose=False)
@@ -1193,6 +1193,117 @@ class AntiCAP(object):
             print("[Anti-CAP] :识别失败，未获取到表达式")
 
         return result
+
+
+    # 图标侦测
+    def Detection_Icon(self, img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_icon.pt')
+        device = torch.device('cuda' if use_gpu else 'cpu')
+        model = YOLO(detectionIcon_model_path, verbose=False)
+        model.to(device)
+
+        image_bytes = base64.b64decode(img_base64)
+        image = Image.open(io.BytesIO(image_bytes))
+
+        results = model(image)
+
+        detections_map = {}
+        if results and results[0].boxes:
+            boxes = results[0].boxes
+            names = results[0].names
+
+            for i in range(len(boxes)):
+                label_index = int(boxes[i].cls.item())
+                label = names[label_index]
+
+                xywh_coords = boxes[i].xywh[0].tolist()
+
+                center_x = xywh_coords[0]
+                center_y = xywh_coords[1]
+                width = xywh_coords[2]
+                height = xywh_coords[3]
+
+                left_x = int(center_x - width / 2)
+                left_y = int(center_y - height / 2)
+                right_x = int(center_x + width / 2)
+                right_y = int(center_y + height / 2)
+
+                box_coordinates = [left_x, left_y, right_x, right_y]
+
+                if label not in detections_map:
+                    detections_map[label] = []
+
+                detections_map[label].append(box_coordinates)
+
+        return json.dumps(detections_map, ensure_ascii=False)
+
+
+    # 按序侦测
+    def ClickIcon_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_icon.pt')
+        device = torch.device('cuda' if use_gpu else 'cpu')
+        model = YOLO(detectionIcon_model_path, verbose=False)
+        model.to(device)
+
+        order_image = Image.open(io.BytesIO(base64.b64decode(order_img_base64)))
+        target_image = Image.open(io.BytesIO(base64.b64decode(target_img_base64)))
+
+        order_results = model(order_image)
+        target_results = model(target_image)
+
+        order_boxes_list = []
+        target_boxes_list = []
+
+        if order_results and order_results[0].boxes:
+            order_boxes = order_results[0].boxes.xyxy
+            order_boxes_list = order_boxes.cpu().numpy().tolist()
+            order_boxes_list.sort(key=lambda x: x[0])
+
+        if target_results and target_results[0].boxes:
+            target_boxes = target_results[0].boxes.xyxy
+            target_boxes_list = target_boxes.cpu().numpy().tolist()
+
+        best_matching_boxes = []
+        best_ssims = []
+
+        for order_box in order_boxes_list:
+            order_crop = order_image.crop((order_box[0], order_box[1], order_box[2], order_box[3]))
+            order_crop_resized = order_crop.resize((256, 256))
+
+            order_crop_np = np.array(order_crop_resized.convert('RGB'))
+
+            best_ssim = -1
+            best_target_box = None
+
+            for target_box in target_boxes_list:
+                target_crop = target_image.crop((target_box[0], target_box[1], target_box[2], target_box[3]))
+                target_crop_resized = target_crop.resize((256, 256))
+                target_crop_np = np.array(target_crop_resized.convert('RGB'))
+                order_gray = cv2.cvtColor(order_crop_np, cv2.COLOR_RGB2GRAY)
+                target_gray = cv2.cvtColor(target_crop_np, cv2.COLOR_RGB2GRAY)
+
+                score, _ = ssim(order_gray, target_gray, full=True)
+
+                if score > best_ssim:
+                    best_ssim = score
+                    best_target_box = target_box
+
+
+            best_matching_boxes.append([int(coord) for coord in best_target_box])
+            best_ssims.append(best_ssim)
+
+        return best_matching_boxes
+
+        # 文字检测
+
+
+    # 模型待训练
+    def Detection_Text(self):
+        pass
+
+    # 模型待训练
+    def ClickChar_Order(self):
+        pass
 
     # 缺口滑块
     def Slider_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False, flag: bool = False):
@@ -1262,6 +1373,7 @@ class AntiCAP(object):
                 "target_y": target_y,
                 "target": [int(max_loc[0]), int(max_loc[1]), int(bottom_right[0]), int(bottom_right[1])]}
 
+
     # 阴影滑块
     def Slider_Comparison(self, target_base64: str = None, background_base64: str = None):
         def decode_base64_to_image(base64_string):
@@ -1295,21 +1407,5 @@ class AntiCAP(object):
             "target": [start_x, start_y]
         }
 
-    # 文字识别
-    def OCR(self, img_base64: str = None ,ocr_model_path: str=None):
-        pass
 
-    # 目标检测
-    def Detection(self, img_base64:str = None,detection_model_path: str=''):
-        """
-        :param detection_model_path:
-        :param img_bytes:
-        :return:
-        模型还在训练 等待开发
-        """
-        pass
-
-    # 顺序点选 检测目标后用孪生模型比对后按顺序输出
-    def Sequ_Click(self, img_base64:str = None, detection_model_path:str='', twin_model_path:str=''):
-        pass
 
