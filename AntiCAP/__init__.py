@@ -13,7 +13,6 @@ import numpy as np
 import onnxruntime
 from ultralytics import YOLO
 from PIL import Image, ImageChops
-
 from skimage.metrics import structural_similarity as ssim
 
 
@@ -30,6 +29,7 @@ class TypeError(Exception):
 
 
 class AntiCAP(object):
+
     logging.getLogger('ultralytics').setLevel(logging.WARNING)
 
 
@@ -46,8 +46,9 @@ class AntiCAP(object):
 |         Github: https://github.com/81NewArk/AntiCAP     |
 |         Author: 81NewArk                                |
 |    Description: 开箱即用 对抗复杂验证码.                    |
------------------------------------------------------------ ''')
+----------------------------------------------------------- 
 
+''')
 
 
     # DDDOCR
@@ -1131,6 +1132,7 @@ class AntiCAP(object):
             }
             return result
 
+
     # 算术识别
     def Arithmetic(self, img_base64: str, arithmetic_model_path: str = '', use_gpu: bool = False):
         arithmetic_model_path = arithmetic_model_path or os.path.join(os.path.dirname(__file__), 'Arithmetic.pt')
@@ -1207,38 +1209,20 @@ class AntiCAP(object):
 
         results = model(image)
 
-        detections_map = {}
-        if results and results[0].boxes:
-            boxes = results[0].boxes
-            names = results[0].names
+        detections = []
+        for box in results[0].boxes:
+            coords = box.xyxy[0].tolist()
+            rounded_box = [round(coord, 2) for coord in coords]
+            class_name = results[0].names[int(box.cls[0])]
+            detections.append({
+                'class': class_name,
+                'box': rounded_box
+            })
 
-            for i in range(len(boxes)):
-                label_index = int(boxes[i].cls.item())
-                label = names[label_index]
-
-                xywh_coords = boxes[i].xywh[0].tolist()
-
-                center_x = xywh_coords[0]
-                center_y = xywh_coords[1]
-                width = xywh_coords[2]
-                height = xywh_coords[3]
-
-                left_x = int(center_x - width / 2)
-                left_y = int(center_y - height / 2)
-                right_x = int(center_x + width / 2)
-                right_y = int(center_y + height / 2)
-
-                box_coordinates = [left_x, left_y, right_x, right_y]
-
-                if label not in detections_map:
-                    detections_map[label] = []
-
-                detections_map[label].append(box_coordinates)
-
-        return json.dumps(detections_map, ensure_ascii=False)
+        return detections
 
 
-    # 按序侦测
+    # 按序侦测图标
     def ClickIcon_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
         detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_icon.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
@@ -1294,15 +1278,34 @@ class AntiCAP(object):
 
         return best_matching_boxes
 
-        # 文字检测
+    # 文字侦测
+    def Detection_Text(self, img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
+        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Det_Text_Alpha.pt')
+        device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
+        model = YOLO(detectionText_model_path, verbose=False)
+        model.to(device)
 
 
-    # 模型待训练
-    def Detection_Text(self):
-        pass
+        image_bytes = base64.b64decode(img_base64)
+        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
 
-    # 模型待训练
-    def ClickChar_Order(self):
+        results = model(image)
+
+        # 构建返回结果（保留两位小数）
+        detections = []
+        for box in results[0].boxes:
+            coords = box.xyxy[0].tolist()
+            rounded_box = [round(coord, 2) for coord in coords]
+            class_name = results[0].names[int(box.cls[0])]
+            detections.append({
+                'text': class_name,
+                'box': rounded_box
+            })
+
+        return detections
+
+    # 按序侦测文字 模型带待训练
+    def ClickText_Order(self):
         pass
 
     # 缺口滑块
