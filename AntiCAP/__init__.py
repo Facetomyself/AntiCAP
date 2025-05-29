@@ -1304,7 +1304,7 @@ class AntiCAP(object):
 
         return detections
 
-    # 按序侦测文字 模型带待训练
+    # 按序侦测文字  模型待训练
     def ClickText_Order(self):
         pass
 
