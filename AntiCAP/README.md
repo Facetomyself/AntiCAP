@@ -60,6 +60,9 @@ pip install -r requirements.txt
 ### 调用方法
 
 ```
+import AntiCAP
+
+if __name__ == '__main__':
     # 初始化
     Atc = AntiCAP.AntiCAP()
 
@@ -67,7 +70,7 @@ pip install -r requirements.txt
     result = Atc.OCR(img_base64="")
 
     # 算术类验证码
-    result = Atc.Arithmetic(img_base64="")
+    result = Atc.Math(img_base64="")
 
     # 图标点选侦测
     result = Atc.Detection_Icon(img_base64="")

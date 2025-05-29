@@ -1,8 +1,5 @@
 import AntiCAP
 
-
-
-
 if __name__ == '__main__':
     # 初始化
     Atc = AntiCAP.AntiCAP()
