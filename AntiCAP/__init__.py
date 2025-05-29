@@ -1134,10 +1134,10 @@ class AntiCAP(object):
 
 
     # 算术识别
-    def Arithmetic(self, img_base64: str, arithmetic_model_path: str = '', use_gpu: bool = False):
-        arithmetic_model_path = arithmetic_model_path or os.path.join(os.path.dirname(__file__), 'Arithmetic.pt')
+    def Math(self, img_base64: str, math_model_path: str = '', use_gpu: bool = False):
+        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Det_Math.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
-        model = YOLO(arithmetic_model_path,verbose=False)
+        model = YOLO(math_model_path,verbose=False)
         model.to(device)
 
         image_bytes = base64.b64decode(img_base64)
@@ -1199,7 +1199,7 @@ class AntiCAP(object):
 
     # 图标侦测
     def Detection_Icon(self, img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_icon.pt')
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_Icon.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionIcon_model_path, verbose=False)
         model.to(device)
@@ -1224,7 +1224,7 @@ class AntiCAP(object):
 
     # 按序侦测图标
     def ClickIcon_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_icon.pt')
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_Icon.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionIcon_model_path, verbose=False)
         model.to(device)
