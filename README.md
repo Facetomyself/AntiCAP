@@ -36,9 +36,8 @@
 ## 🌍环境说明
 
 ```
-python 3.8
+python 3.8 +
 
-torch pypi或torch官网下载
 ```
 
 <br>
