@@ -92,24 +92,6 @@ if __name__ == '__main__':
     print(result)
   ```
 
-
-
-# 💪🏼 模型训练
-
-<br>
-
-<div align="center">
-
-<img src="https://img.picui.cn/free/2025/05/30/6839b2cedf6c7.png" width="200" height="200">
-
-<strong>https://github.com/81NewArk/AntiCAP_trainer</strong>
-
-根据自身要求训练模型 无缝衔接下一个 下一个更乖。
-
-</div>
-
-
-
 # 🐧 QQ交流群
 
 <br>
@@ -132,6 +114,19 @@ if __name__ == '__main__':
 
 <br>
 
+# 💪🏼 模型训练
+
+<br>
+
+<div align="center">
+
+<img src="https://img.picui.cn/free/2025/05/30/6839b2cedf6c7.png" width="200" height="200">
+
+<strong>https://github.com/81NewArk/AntiCAP_trainer</strong>
+
+根据自身要求训练模型 无缝衔接下一个 下一个更乖。
+
+</div>
 
 # 😚 致谢名单
 
