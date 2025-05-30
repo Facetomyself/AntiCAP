@@ -1,24 +1,22 @@
 <div align="center">
 
-<img src="https://gitee.com/NewArk81/AntiCAP/raw/main/logo.png" alt="logo" width="200" height="200">
-
+<img src="https://img.picui.cn/free/2025/05/30/6839b133eec65.png" alt="logo" width="200" height="200">
 
 # AntiCAP
-
-| 类型        | 状态 | 描述            |
-|-----------|-|---------------|
-| `OCR识别` |✅| 返回图片字符串       |
-| `缺口滑块` |✅| 返回坐标          |
-| `阴影滑块` |✅| 返回坐标          |
-| `图标点选` |✅| 侦测图标位置 或 按序返回坐标 |
-| `文字点选` |✅| 侦测文字位置 或 按序返回坐标 |
-| `WebApi服务` | ❌ | Http接口方便各语言调用 待更新 |
-
 
 <strong>多类型验证码识别</strong>
 
 <strong>开源学习项目，不承担法律责任。</strong>
 
+| 类型         | 状态 | 描述                                         |
+|------------|-|--------------------------------------------|
+| `OCR识别`    |✅| 返回图片字符串                                    |
+| `数学计算`     |✅| 返回计算结果                                     |
+| `缺口滑块`     |✅| 返回坐标                                       |
+| `阴影滑块`     |✅| 返回坐标                                       |
+| `图标点选`     |✅| 侦测图标位置 或 按序返回坐标                            |
+| `文字点选`     |✅| 侦测文字位置 或 按序返回坐标                            |
+| `WebApi服务` | ✅ | https://github.com/81NewArk/AntiCAP-WebApi |
 
 
 </div>
@@ -30,36 +28,37 @@
 
 # 📄 AntiCAP 文档
 
-
 </div>
 
 ## 🌍环境说明
 
 ```
-python 3.8 +
-
+python 3.8+
 ```
 
 <br>
 
 
-## 📁 安装和使用
-<br>
+## 📁 安装
 
-### 安装项目
-
+###  方案一 下载源码
 ```
-
 git clone https://github.com/81NewArk/AntiCAP.git
 cd AntiCAP
-pip install -r requirements.txt
-
+pip install -r requirements.txt 
 ```
 
-### 调用方法
+
+###  方案二 Pypi下载
+```
+pip install AntiCAP -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+## 🤖 调用
 
 ```
 import AntiCAP
+
 
 if __name__ == '__main__':
     # 初始化
@@ -77,18 +76,14 @@ if __name__ == '__main__':
     # 图标点选 按序输出
     result = Atc.ClickIcon_Order(order_img_base64="",target_img_base64="")
 
-
     # 汉字侦测
     result = Atc.Detection_Text(img_base64="")
-
 
     # 文字点选 按序输出
     result = Atc.ClickText_Order(order_img_base64="",target_img_base64="")
 
-
     # 缺口滑块
     result = Atc.Slider_Match(target_base64="",background_base64="")
-
 
     # 阴影滑块
     result = Atc.Slider_Comparison(target_base64="",background_base64="")
@@ -97,7 +92,26 @@ if __name__ == '__main__':
     print(result)
   ```
 
+# 🐧 QQ交流群
+
 <br>
+
+<div align="center">
+
+<img src="https://img.picui.cn/free/2025/05/30/6839b3dd23a26.png" alt="QQGroup" width="200" height="200">
+
+</div>
+
+# 🚬 请作者抽一包香香软软的利群
+<br>
+
+<div align="center">
+
+<img src="https://img.picui.cn/free/2025/05/30/6839b433087a7.png" alt="Ali" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/05/30/6839b451d9d97.png" alt="Wx" width="200" height="200">
+
+</div>
+
 <br>
 
 # 💪🏼 模型训练
@@ -106,58 +120,19 @@ if __name__ == '__main__':
 
 <div align="center">
 
-<img src="https://gitee.com/NewArk81/AntiCAP_trainer/raw/main/docs/logo.png" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/05/30/6839b2cedf6c7.png" width="200" height="200">
 
-<br>
-<br>
-
-<strong>AntiCAP_trainer : https://github.com/81NewArk/AntiCAP_trainer</strong>
-
-<br>
+<strong>https://github.com/81NewArk/AntiCAP_trainer</strong>
 
 根据自身要求训练模型 无缝衔接下一个 下一个更乖。
 
 </div>
 
-<br>
-<br>
-<br>
-
-# 🐧 QQ交流群
-
-<br>
-
-<div align="center">
-
-<img src="https://gitee.com/NewArk81/AntiCAP_trainer/raw/main/docs/QQ_Group.png" alt="QQGroup" width="200" height="200">
-
-</div>
-
-
-<br>
-<br>
-<br>
-
-# 🚬 请作者抽一包香香软软的利群
-<br>
-
-<div align="center">
-
-<img src="https://gitee.com/NewArk81/AntiCAP_trainer/raw/main/docs/Ali.png" alt="Ali" width="200" height="200">
-<img src="https://gitee.com/NewArk81/AntiCAP_trainer/raw/main/docs/Wx.png" alt="Wx" width="200" height="200">
-
-</div>
-
-<br>
-<br>
-<br>
-
 # 😚 致谢名单
-<br>
 
-<p>这份荣光我不会独享</p>
-<br>
-<br>
+
+<strong>这份荣光我不会独享</strong>
+
 
 [1] Ddddocr作者 网名:sml2h3
 
@@ -178,15 +153,7 @@ if __name__ == '__main__':
 
 
 
-<br>
-<br>
-<br>
-
 # 📚 参考文献
-<br>
-
-
-
 
 [1] Github. 2025.03.28 https://github.com/sml2h3
 
