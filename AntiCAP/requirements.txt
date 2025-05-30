@@ -1,4 +1,6 @@
+opencv-python==3.4.16.59
 onnxruntime
 Pillow
+scikit-image
 numpy<2.0.0
-opencv-python==3.4.16.59
+ultralytics~=8.3.96
