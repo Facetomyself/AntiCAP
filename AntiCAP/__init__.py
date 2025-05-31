@@ -1307,7 +1307,7 @@ class AntiCAP(object):
 
     # 按序侦测文字  模型待训练
     def ClickText_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
-        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Det_Text_Beta.pt')
+        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Det_Text_Alpha.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionText_model_path, verbose=False)
         model.to(device)
