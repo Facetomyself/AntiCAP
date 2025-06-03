@@ -16,7 +16,7 @@
 | `阴影滑块`     |✅| 返回坐标                                       |
 | `图标点选`     |✅| 侦测图标位置 或 按序返回坐标                            |
 | `文字点选`     |✅| 侦测文字位置 或 按序返回坐标                            |
-| `WebApi服务` | ✅ | https://github.com/81NewArk/AntiCAP-WebApi |
+| `WebApi服务` | ✅ | FastAPI接口服务                                |
 
 
 </div>
@@ -53,9 +53,9 @@ pip install AntiCAP -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 ## 🤖 调用
 
-```
+### 本地调用
+```python
 import AntiCAP
-
 
 if __name__ == '__main__':
     # 初始化
@@ -87,7 +87,56 @@ if __name__ == '__main__':
 
     # 输出结果
     print(result)
-  ```
+```
+
+### API接口调用
+
+1. 启动API服务
+```bash
+python -m uvicorn AntiCAP.api:app --host 0.0.0.0 --port 30010
+```
+
+2. API接口说明
+- 所有接口都接受POST请求
+- 所有图片数据都需要以base64格式传输
+- 接口文档访问地址：`http://localhost:8000/docs`
+
+3. 接口列表
+- `/ocr` - 文字识别
+- `/math` - 数学验证码识别
+- `/detection/icon` - 图标检测
+- `/click/icon/order` - 图标点击顺序识别
+- `/detection/text` - 文本检测
+- `/click/text/order` - 文本点击顺序识别
+- `/slider/match` - 滑块匹配
+- `/slider/comparison` - 滑块对比
+
+4. 调用示例
+```python
+import requests
+import base64
+
+# 读取图片并转换为base64
+def image_to_base64(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode()
+
+# OCR识别示例
+def ocr_demo(image_path):
+    img_base64 = image_to_base64(image_path)
+    response = requests.post(
+        "http://localhost:8000/ocr",
+        json={
+            "img_base64": img_base64,
+            "use_gpu": False,
+            "png_fix": False,
+            "probability": False
+        }
+    )
+    return response.json()
+
+# 其他接口调用方式类似，详细参数请参考API文档
+```
 
 # 🐧 QQ交流群
 
