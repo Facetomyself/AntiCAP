@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://img.picui.cn/free/2025/05/30/6839b133eec65.png" alt="logo" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/07/04/6867ef499899c.png" alt="logo" width="200" height="200">
 
 # AntiCAP
 
