@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
 <div align="center">
 
-<img src="https://img.picui.cn/free/2025/05/30/6839b2cedf6c7.png" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/07/04/6867f0684ff6e.png" width="200" height="200">
 
 <strong>https://github.com/81NewArk/AntiCAP_trainer</strong>
 
