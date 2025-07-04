@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
 <div align="center">
 
-<img src="https://img.picui.cn/free/2025/05/30/6839b3dd23a26.png" alt="QQGroup" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/07/04/6867f1907d1a0.png" alt="QQGroup" width="200" height="200">
 
 </div>
 
