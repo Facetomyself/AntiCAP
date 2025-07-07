@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://img.picui.cn/free/2025/05/30/6839b133eec65.png" alt="logo" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/07/04/6867ef499899c.png" alt="logo" width="200" height="200">
 
 # AntiCAP
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
 <div align="center">
 
-<img src="https://img.picui.cn/free/2025/05/30/6839b3dd23a26.png" alt="QQGroup" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/07/04/6867f1907d1a0.png" alt="QQGroup" width="200" height="200">
 
 </div>
 
@@ -104,8 +104,8 @@ if __name__ == '__main__':
 
 <div align="center">
 
-<img src="https://img.picui.cn/free/2025/05/30/6839b433087a7.png" alt="Ali" width="200" height="200">
-<img src="https://img.picui.cn/free/2025/05/30/6839b451d9d97.png" alt="Wx" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/07/04/6867efd0bd67e.png" alt="Ali" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/07/04/6867efd0d7cbb.png" alt="Wx" width="200" height="200">
 
 </div>
 
@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
 <div align="center">
 
-<img src="https://img.picui.cn/free/2025/05/30/6839b2cedf6c7.png" width="200" height="200">
+<img src="https://img.picui.cn/free/2025/07/04/6867f0684ff6e.png" width="200" height="200">
 
 <strong>https://github.com/81NewArk/AntiCAP_trainer</strong>
 
