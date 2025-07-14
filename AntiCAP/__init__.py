@@ -254,6 +254,7 @@ class AntiCAP(object):
 
         return best_matching_boxes
 
+
     # 文字侦测
     def Detection_Text(self, img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
         detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models', 'Det_Text_Alpha.pt')
@@ -279,6 +280,7 @@ class AntiCAP(object):
             })
 
         return detections
+
 
     # 按序侦测文字
     def ClickText_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
@@ -496,7 +498,6 @@ class AntiCAP(object):
     def compare_image_similarity(self,image1_base64: str = None,image2_base64: str = None,sim_onnx_model_path: str = '',use_gpu: bool = False):
 
         sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models', '[Text]Siamese_model.onnx')
-
 
         def decode_base64_to_pil(b64str):
             img_bytes = base64.b64decode(b64str)
