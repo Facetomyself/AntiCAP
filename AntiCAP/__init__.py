@@ -33,7 +33,6 @@ class AntiCAP(object):
 
     logging.getLogger('ultralytics').setLevel(logging.WARNING)
 
-
     def __init__(self, show_ad=True):
         if show_ad:
             print('''
@@ -281,8 +280,7 @@ class AntiCAP(object):
 
         return detections
 
-
-    # 按序侦测文字  模型待训练
+    # 按序侦测文字
     def ClickText_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
         detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models', 'Det_Text_Alpha.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
@@ -492,3 +490,47 @@ class AntiCAP(object):
         return {
             "target": [start_x, start_y]
         }
+
+
+    # 图像相似度比较 对比图片的中的文字
+    def compare_image_similarity(self,image1_base64: str = None,image2_base64: str = None,sim_onnx_model_path: str = '',use_gpu: bool = False):
+
+        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models', '[Text]Siamese_model.onnx')
+
+
+        def decode_base64_to_pil(b64str):
+            img_bytes = base64.b64decode(b64str)
+            return Image.open(io.BytesIO(img_bytes)).convert('RGB')
+
+
+        def pil_to_numpy(img, size=(105, 105)):
+            img = img.resize(size)
+            img_np = np.asarray(img).astype(np.float32) / 255.0
+            img_np = np.transpose(img_np, (2, 0, 1))
+            img_np = np.expand_dims(img_np, axis=0)
+            return img_np
+
+        img1 = decode_base64_to_pil(image1_base64)
+        img2 = decode_base64_to_pil(image2_base64)
+
+        tensor1 = pil_to_numpy(img1)
+        tensor2 = pil_to_numpy(img2)
+
+        # 设置推理设备
+        providers = ['CUDAExecutionProvider'] if use_gpu else ['CPUExecutionProvider']
+
+
+        ort_session = onnxruntime.InferenceSession(sim_onnx_model_path, providers=providers)
+        input_names = [inp.name for inp in ort_session.get_inputs()]
+
+        inputs = {
+            input_names[0]: tensor1.astype(np.float32),
+            input_names[1]: tensor2.astype(np.float32)
+        }
+
+        outputs = ort_session.run(None, inputs)
+        similarity = outputs[0][0][0]
+
+        return similarity
+
+
