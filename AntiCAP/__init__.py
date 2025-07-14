@@ -47,7 +47,7 @@ class AntiCAP(object):
             |         Author: 81NewArk                                |
             -----------------------------------------------------------''')
 
-
+    # 文字识别
     def OCR(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
 
         current_dir = os.path.dirname(__file__)
@@ -108,48 +108,26 @@ class AntiCAP(object):
             }
             return result
 
-
     # 算术识别
     def Math(self, img_base64: str, math_model_path: str = '', use_gpu: bool = False):
-        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Models', '[Math]Detection_model.pt')
+
+        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Math]Detection_model.pt')
 
         device = torch.device('cuda' if use_gpu else 'cpu')
-        model = YOLO(math_model_path,verbose=False)
+        model = YOLO(math_model_path, verbose=False)
         model.to(device)
 
         image_bytes = base64.b64decode(img_base64)
         image = Image.open(io.BytesIO(image_bytes))
         results = model(image)
-        boxes = results[0].boxes
-        names = results[0].names
 
-
-        result_dict = {}
-        for i in range(len(boxes)):
-            label_index = int(boxes[i].cls.item())
-            label = names[label_index]
-            coordinates = boxes[i].xywh[0].tolist()
-
-            left_x = int(coordinates[0] - coordinates[2] / 2)
-            left_y = int(coordinates[1] - coordinates[3] / 2)
-            right_x = int(coordinates[0] + coordinates[2] / 2)
-            right_y = int(coordinates[1] + coordinates[3] / 2)
-
-            if label not in result_dict:
-                result_dict[label] = []
-
-            result_dict[label].append([left_x, left_y, right_x, right_y])
-
-        json_result = json.dumps({"result": result_dict}, ensure_ascii=False)
-
-        data = json.loads(json_result)
-        result_dict = data["result"]
 
         sorted_elements = []
-        for label, coordinates_list in result_dict.items():
-            for coordinates in coordinates_list:
-                left_x = coordinates[0]
-                sorted_elements.append((left_x, label))
+        for box in results[0].boxes:
+            cls_id = int(box.cls[0])
+            label = results[0].names[cls_id]
+            x1 = float(box.xyxy[0][0])
+            sorted_elements.append((x1, label))
 
         sorted_elements.sort(key=lambda x: x[0])
         sorted_labels = [label for _, label in sorted_elements]
@@ -158,21 +136,17 @@ class AntiCAP(object):
         result = None
 
         if captcha_text:
-            if '=' in captcha_text:
-                expr = captcha_text.split('=')[0]
-            else:
-                expr = captcha_text
+            expr = captcha_text.split('=')[0] if '=' in captcha_text else captcha_text
             expr = expr.replace('×', '*').replace('÷', '/')
             expr = re.sub(r'[^\d\+\-\*/]', '', expr)
             try:
                 result = eval(expr)
             except Exception as e:
-                print(f"表达式解析出错: {e}")
+                print(f"[Anti-CAP] 表达式解析出错: {e}")
         else:
-            print("[Anti-CAP] :识别失败，未获取到表达式")
+            print("[Anti-CAP] 识别失败，未获取到表达式")
 
         return result
-
 
     # 图标侦测
     def Detection_Icon(self, img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
