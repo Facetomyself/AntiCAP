@@ -47,8 +47,6 @@ class AntiCAP(object):
             |         Author: 81NewArk                                |
             -----------------------------------------------------------''')
 
-
-    # DDDOCR
     def OCR(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
 
         current_dir = os.path.dirname(__file__)
@@ -60,18 +58,20 @@ class AntiCAP(object):
             with open(charset_path, 'r', encoding='utf-8') as f:
                 list_as_string = f.read()
                 charset = ast.literal_eval(list_as_string)
-
         except FileNotFoundError:
-
             raise FileNotFoundError(f"字符集文件未在 {charset_path} 找到。")
         except Exception as e:
             raise ValueError(f"解析字符集文件时出错: {e}")
 
 
-        session = onnxruntime.InferenceSession(model_path)
+        providers = ['CUDAExecutionProvider'] if use_gpu and onnxruntime.get_device().upper() == 'GPU' else [
+            'CPUExecutionProvider']
+        session = onnxruntime.InferenceSession(model_path, providers=providers)
+
 
         img_data = base64.b64decode(img_base64)
         image = Image.open(io.BytesIO(img_data))
+
 
         image = image.resize((int(image.size[0] * (64 / image.size[1])), 64), Image.Resampling.LANCZOS).convert('L')
         image = np.array(image).astype(np.float32)
@@ -82,8 +82,8 @@ class AntiCAP(object):
         ort_outs = session.run(None, ort_inputs)
 
         result = []
-
         last_item = 0
+
         if not probability:
             argmax_result = np.squeeze(np.argmax(ort_outs[0], axis=2))
             for item in argmax_result:
