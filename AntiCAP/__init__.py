@@ -52,10 +52,9 @@ class AntiCAP(object):
     # DDDOCR
     def OCR(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
 
-
         current_dir = os.path.dirname(__file__)
-        model_path = os.path.join(current_dir, 'Ddddocr.onnx')
-        charset_path = os.path.join(current_dir, 'charset.txt')
+        model_path = os.path.join(current_dir, 'Models', 'Ddddocr.onnx')
+        charset_path = os.path.join(current_dir, 'Models', 'charset.txt')
 
 
         try:
@@ -112,7 +111,8 @@ class AntiCAP(object):
 
     # 算术识别
     def Math(self, img_base64: str, math_model_path: str = '', use_gpu: bool = False):
-        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Det_Math.pt')
+        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Models', 'Det_Math.pt')
+
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(math_model_path,verbose=False)
         model.to(device)
@@ -176,7 +176,7 @@ class AntiCAP(object):
 
     # 图标侦测
     def Detection_Icon(self, img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_Icon.pt')
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models', 'Det_Icon.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionIcon_model_path, verbose=False)
         model.to(device)
@@ -201,7 +201,7 @@ class AntiCAP(object):
 
     # 按序侦测图标
     def ClickIcon_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Det_Icon.pt')
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models', 'Det_Icon.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionIcon_model_path, verbose=False)
         model.to(device)
@@ -257,7 +257,7 @@ class AntiCAP(object):
 
     # 文字侦测
     def Detection_Text(self, img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
-        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Det_Text_Alpha.pt')
+        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models', 'Det_Text_Alpha.pt')
         device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
         model = YOLO(detectionText_model_path, verbose=False)
         model.to(device)
@@ -284,7 +284,7 @@ class AntiCAP(object):
 
     # 按序侦测文字  模型待训练
     def ClickText_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
-        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Det_Text_Alpha.pt')
+        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models', 'Det_Text_Alpha.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionText_model_path, verbose=False)
         model.to(device)
