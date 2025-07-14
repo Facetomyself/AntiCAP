@@ -84,6 +84,9 @@ if __name__ == '__main__':
 
     # 阴影滑块
     result = Atc.Slider_Comparison(target_base64="",background_base64="")
+    
+    # 图像相似度对比  对比图片中的文字
+    result= Atc.compare_image_similarity(image1_base64="", image2_base64="")
 
     # 输出结果
     print(result)
