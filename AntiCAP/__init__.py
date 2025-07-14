@@ -47,6 +47,7 @@ class AntiCAP(object):
             |         Author: 81NewArk                                |
             -----------------------------------------------------------''')
 
+
     def OCR(self, img_base64: str = None, use_gpu: bool = False, png_fix: bool = False, probability=False):
 
         current_dir = os.path.dirname(__file__)
@@ -199,15 +200,32 @@ class AntiCAP(object):
 
 
     # 按序侦测图标
-    def ClickIcon_Order(self, order_img_base64: str = None, target_img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models', 'Det_Icon.pt')
+    def ClickIcon_Order(self, order_img_base64: str = None, target_img_base64: str = None,detectionIcon_model_path: str = '', sim_onnx_model_path: str = '',use_gpu: bool = False):
+
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models','Det_Icon.pt')
+        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Text]Siamese_model.onnx')
+
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionIcon_model_path, verbose=False)
         model.to(device)
 
-        order_image = Image.open(io.BytesIO(base64.b64decode(order_img_base64)))
-        target_image = Image.open(io.BytesIO(base64.b64decode(target_img_base64)))
 
+        providers = ['CUDAExecutionProvider'] if use_gpu else ['CPUExecutionProvider']
+        sim_session = onnxruntime.InferenceSession(sim_onnx_model_path, providers=providers)
+        input_names = [inp.name for inp in sim_session.get_inputs()]
+
+        def pil_to_tensor(img, size=(105, 105)):
+            img = img.resize(size)
+            img_np = np.asarray(img).astype(np.float32) / 255.0
+            img_np = np.transpose(img_np, (2, 0, 1))  # HWC -> CHW
+            img_np = np.expand_dims(img_np, axis=0)
+            return img_np
+
+        # 解码图片
+        order_image = Image.open(io.BytesIO(base64.b64decode(order_img_base64))).convert("RGB")
+        target_image = Image.open(io.BytesIO(base64.b64decode(target_img_base64))).convert("RGB")
+
+        # 图标检测
         order_results = model(order_image)
         target_results = model(target_image)
 
@@ -217,40 +235,42 @@ class AntiCAP(object):
         if order_results and order_results[0].boxes:
             order_boxes = order_results[0].boxes.xyxy
             order_boxes_list = order_boxes.cpu().numpy().tolist()
-            order_boxes_list.sort(key=lambda x: x[0])
+            order_boxes_list.sort(key=lambda x: x[0])  # 从左到右排序
 
         if target_results and target_results[0].boxes:
             target_boxes = target_results[0].boxes.xyxy
             target_boxes_list = target_boxes.cpu().numpy().tolist()
 
         best_matching_boxes = []
-        best_ssims = []
+
 
         for order_box in order_boxes_list:
             order_crop = order_image.crop((order_box[0], order_box[1], order_box[2], order_box[3]))
-            order_crop_resized = order_crop.resize((256, 256))
-
-            order_crop_np = np.array(order_crop_resized.convert('RGB'))
-
-            best_ssim = -1
+            best_score = -1
             best_target_box = None
 
             for target_box in target_boxes_list:
                 target_crop = target_image.crop((target_box[0], target_box[1], target_box[2], target_box[3]))
-                target_crop_resized = target_crop.resize((256, 256))
-                target_crop_np = np.array(target_crop_resized.convert('RGB'))
-                order_gray = cv2.cvtColor(order_crop_np, cv2.COLOR_RGB2GRAY)
-                target_gray = cv2.cvtColor(target_crop_np, cv2.COLOR_RGB2GRAY)
 
-                score, _ = ssim(order_gray, target_gray, full=True)
+                tensor1 = pil_to_tensor(order_crop)
+                tensor2 = pil_to_tensor(target_crop)
 
-                if score > best_ssim:
-                    best_ssim = score
+                inputs = {
+                    input_names[0]: tensor1.astype(np.float32),
+                    input_names[1]: tensor2.astype(np.float32)
+                }
+
+                output = sim_session.run(None, inputs)
+                similarity_score = output[0][0][0]
+
+                if similarity_score > best_score:
+                    best_score = similarity_score
                     best_target_box = target_box
 
-
-            best_matching_boxes.append([int(coord) for coord in best_target_box])
-            best_ssims.append(best_ssim)
+            if best_target_box:
+                best_matching_boxes.append([int(coord) for coord in best_target_box])
+            else:
+                best_matching_boxes.append([0, 0, 0, 0])  # fallback if no match
 
         return best_matching_boxes
 

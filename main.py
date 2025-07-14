@@ -1,6 +1,7 @@
 import AntiCAP
 
 if __name__ == '__main__':
+
     # 初始化
     Atc = AntiCAP.AntiCAP()
 
@@ -10,7 +11,7 @@ if __name__ == '__main__':
     # 算术类验证码
     result = Atc.Math(img_base64="")
 
-    # 图标点选侦测
+    # 图标侦测
     result = Atc.Detection_Icon(img_base64="")
 
     # 图标点选 按序输出
