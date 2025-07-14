@@ -24,7 +24,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=['numpy', 'onnxruntime', 'Pillow', 'opencv-python','ultralytics'],
-    python_requires='<3.13',
+    python_requires='<=3.13',
     include_package_data=True,
     install_package_data=True,
 )
