@@ -4,7 +4,6 @@ import io
 import os
 import re
 import cv2
-import json
 import torch
 import base64
 import logging
