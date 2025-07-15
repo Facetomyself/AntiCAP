@@ -1,6 +1,5 @@
 opencv-python>=4.6.0
 onnxruntime
 Pillow
-scikit-image
 numpy<2.0.0
 ultralytics~=8.3.96
