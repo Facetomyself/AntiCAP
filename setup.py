@@ -5,13 +5,13 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="AntiCAP",
-    version="3.0.1",
+    version="3.1.2",
     author="NewArk81",
     description="AntiCAP",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/81NewArk/AntiCAP",
-    packages=find_packages(where='.', exclude=(), include=('*',)),
+    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.7",
@@ -23,8 +23,14 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=['numpy', 'onnxruntime', 'Pillow', 'opencv-python','ultralytics'],
+    install_requires=[
+        'numpy',
+        'onnxruntime',
+        'Pillow',
+        'opencv-python',
+        'ultralytics',
+        'requests'
+    ],
     python_requires='<=3.13',
     include_package_data=True,
-    install_package_data=True,
 )

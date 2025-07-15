@@ -3,3 +3,4 @@ onnxruntime
 Pillow
 numpy<2.0.0
 ultralytics~=8.3.96
+requests

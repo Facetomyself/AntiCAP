@@ -13,7 +13,8 @@ import numpy as np
 import onnxruntime
 from ultralytics import YOLO
 from PIL import Image, ImageChops
-
+import requests
+import urllib.parse
 
 
 
@@ -21,6 +22,40 @@ warnings.filterwarnings('ignore')
 onnxruntime.set_default_logger_severity(3)
 
 
+def Download_Models_if_needed():
+    current_dir = os.path.dirname(__file__)
+    output_dir = os.path.join(current_dir, "Models")
+
+    base_url = "https://hf-mirror.com/spaces/NewArk81/AntiCAP_Models/resolve/main/"
+    filenames = [
+        "[Icon]Detection_model.pt",
+        "[Math]Detection_model.pt",
+        "[OCR]Ddddocr.onnx",
+        "[Text]Detection_model.pt",
+        "[Text]Siamese_model.onnx",
+        "charset.txt"
+    ]
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    for fname in filenames:
+        filepath = os.path.join(output_dir, fname)
+        if not os.path.exists(filepath):
+            print(f"[Anti-CAP] Model file {fname} not found. Downloading...")
+            encoded_name = urllib.parse.quote(fname)
+            full_url = base_url + encoded_name
+            try:
+                with requests.get(full_url, stream=True, timeout=60) as r:
+                    r.raise_for_status()
+                    with open(filepath, "wb") as f:
+                        for chunk in r.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                print(f"[Anti-CAP] ✅ Downloaded: {fname}")
+            except Exception as e:
+                print(f"[Anti-CAP] ❌ Failed to download {fname}: {e}")
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+                raise IOError(f"Failed to download required model '{fname}'.") from e
 
 
 class TypeError(Exception):
@@ -33,6 +68,8 @@ class AntiCAP(object):
     logging.getLogger('ultralytics').setLevel(logging.WARNING)
 
     def __init__(self, show_ad=True):
+        Download_Models_if_needed()
+
         if show_ad:
             print('''
             -----------------------------------------------------------  
