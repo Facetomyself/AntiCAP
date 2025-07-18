@@ -4,7 +4,7 @@
 
 # AntiCAP
 
-<strong>Version:3.1.2</strong>
+<strong>Version:3.1.3</strong>
 
 <strong>多类型验证码识别，开源学习项目，不承担法律责任。</strong>
 

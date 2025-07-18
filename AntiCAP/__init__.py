@@ -67,10 +67,10 @@ class AntiCAP(object):
 
     logging.getLogger('ultralytics').setLevel(logging.WARNING)
 
-    def __init__(self, show_ad=True):
+    def __init__(self, show_banner=True):
         Download_Models_if_needed()
 
-        if show_ad:
+        if show_banner:
             print('''
             -----------------------------------------------------------  
             |      _              _     _    ____      _      ____    |
