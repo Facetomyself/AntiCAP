@@ -3,7 +3,7 @@ import AntiCAP
 if __name__ == '__main__':
 
     # 初始化
-    Atc = AntiCAP.AntiCAP()
+    Atc = AntiCAP.Handler()
 
     # 文字类验证码 字母 数字 汉字
     result = Atc.OCR(img_base64="")

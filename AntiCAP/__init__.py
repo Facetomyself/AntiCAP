@@ -63,7 +63,7 @@ class TypeError(Exception):
 
 
 
-class AntiCAP(object):
+class Handler(object):
 
     logging.getLogger('ultralytics').setLevel(logging.WARNING)
 

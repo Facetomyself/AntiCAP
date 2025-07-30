@@ -34,64 +34,263 @@
 ## 🌍环境说明
 
 ```
-python 3.8+
+python >=3.8  64bit
 ```
 
 ## 📁 安装
 
-###  方案一 下载源码
-```
-git clone https://github.com/81NewArk/AntiCAP.git
-cd AntiCAP
-pip install -r requirements.txt 
-```
 
-
-###  方案二 Pypi下载
+###  Pypi下载
 ```
 pip install AntiCAP -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 ## 🤖 调用
 
-```
+###  1. 通用OCR识别
+#### 参考例图 (数字、大小写字母、汉字)
+<img src="https://free.picui.cn/free/2025/07/30/68896c92e18f0.jpg">
+
+
+```python
+# example.py
+
+import base64
 import AntiCAP
 
 
-if __name__ == '__main__':
-    # 初始化
-    Atc = AntiCAP.AntiCAP()
+with open("captcha.jpg", "rb") as img_file:
+    img_base64 = base64.b64encode(img_file.read()).decode('utf-8')
 
-    # 文字类验证码 字母 数字 汉字
-    result = Atc.OCR(img_base64="")
 
-    # 算术类验证码
-    result = Atc.Math(img_base64="")
+Atc = AntiCAP.Handler(show_banner=True)
+result = Atc.OCR(img_base64=img_base64) #传入图片Base64编码字符串
 
-    # 图标点选侦测
-    result = Atc.Detection_Icon(img_base64="")
+print(result) # 返回字符串 jepy
+```
 
-    # 图标点选 按序输出
-    result = Atc.ClickIcon_Order(order_img_base64="",target_img_base64="")
+###  2. 算术验证码识别
+#### 参考例图 (加减乘除类) 目前模型泛化能力较弱 等待更新
+<img src="https://free.picui.cn/free/2025/07/30/6889718adee8f.jpg">
 
-    # 汉字侦测
-    result = Atc.Detection_Text(img_base64="")
 
-    # 文字点选 按序输出
-    result = Atc.ClickText_Order(order_img_base64="",target_img_base64="")
+```python
+# example.py
 
-    # 缺口滑块
-    result = Atc.Slider_Match(target_base64="",background_base64="")
+import base64
+import AntiCAP
 
-    # 阴影滑块
-    result = Atc.Slider_Comparison(target_base64="",background_base64="")
-    
-    # 图像相似度对比  对比图片中的文字
-    result= Atc.compare_image_similarity(image1_base64="", image2_base64="")
 
-    # 输出结果
-    print(result)
-  ```
+with open("captcha.jpg", "rb") as img_file:
+    img_base64 = base64.b64encode(img_file.read()).decode('utf-8')
+
+
+Atc = AntiCAP.Handler(show_banner=True)
+result = Atc.Math(img_base64=img_base64) #传入图片Base64编码字符串
+
+print(result) #返回计算结果 8
+
+```
+
+###  3. 图标侦测
+#### 参考例图
+<img src="https://free.picui.cn/free/2025/07/30/688972d69d3c1.jpg" width="200" height="200">
+
+
+```python
+# example.py
+
+import base64
+import AntiCAP
+
+
+with open("captcha.jpg", "rb") as img_file:
+    img_base64 = base64.b64encode(img_file.read()).decode('utf-8')
+
+
+Atc = AntiCAP.Handler(show_banner=True)
+result = Atc.Detection_Icon(img_base64=img_base64) #传入图片Base64编码字符串
+
+print(result)
+
+# [{'class': 'icon', 'box': [9.12, 105.4, 111.73, 223.02]}...]
+# box分别为 [x1, y1, x2, y2] 左上角和右下角坐标
+
+```
+
+###  4. 文字侦测
+#### 参考例图
+<img src="https://free.picui.cn/free/2025/07/30/688974085b38e.jpg" width="200" height="200">
+
+
+```python
+# example.py
+
+import base64
+import AntiCAP
+
+
+with open("captcha.jpg", "rb") as img_file:
+    img_base64 = base64.b64encode(img_file.read()).decode('utf-8')
+
+
+Atc = AntiCAP.Handler(show_banner=True)
+result = Atc.Detection_Text(img_base64=img_base64) #传入图片Base64编码字符串
+
+print(result)
+# [{'class': 'Text', 'box': [145.71, 19.21, 223.99, 95.7]}...]
+# box分别为 [x1, y1, x2, y2] 左上角和右下角坐标
+```
+
+###  5. 图标点选类
+#### 提示图
+<img src="https://free.picui.cn/free/2025/07/30/688975c92514c.jpg" width="200" height="50">
+
+#### 目标图片
+<img src="https://free.picui.cn/free/2025/07/30/688972d69d3c1.jpg" width="200" height="200">
+
+
+```python
+# example.py
+
+import base64
+import AntiCAP
+
+with open("order_image.jpg", "rb") as f:
+    order_img_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+# 读取目标图（所有图标）并转为 base64
+with open("target_image.jpg", "rb") as f:
+    target_img_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+Atc = AntiCAP.Handler(show_banner=True)
+result = Atc.ClickIcon_Order(
+    order_img_base64=order_img_base64,
+    target_img_base64=target_img_base64
+)
+
+print(result)
+```
+
+###  6. 文字点选类
+#### 提示图
+<img src="https://free.picui.cn/free/2025/07/30/6889773219292.jpg" width="200" height="50">
+
+#### 目标图片
+<img src="https://free.picui.cn/free/2025/07/30/688974085b38e.jpg" width="200" height="200">
+
+
+```python
+# example.py
+
+import base64
+import AntiCAP
+
+with open("order_image.jpg", "rb") as f:
+    order_img_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+# 读取目标图（所有图标）并转为 base64
+with open("target_image.jpg", "rb") as f:
+    target_img_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+Atc = AntiCAP.Handler(show_banner=True)
+result = Atc.ClickIcon_Order(
+    order_img_base64=order_img_base64,
+    target_img_base64=target_img_base64
+)
+
+print(result)
+```
+
+###  7. 缺口滑块类
+#### 缺口图
+<img src="https://free.picui.cn/free/2025/07/30/68897881c804c.png" width="50" height="120">
+
+#### 背景图
+<img src="https://free.picui.cn/free/2025/07/30/688978834962d.jpg" width="400" height="200">
+
+```python
+# example.py
+
+import base64
+import AntiCAP
+
+# 读取滑块图片（小块）
+with open("slider.png", "rb") as f:
+    target_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+# 读取背景图片（带缺口的大图）
+with open("background.jpg", "rb") as f:
+    background_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+
+Atc = AntiCAP.Handler(show_banner=True)
+
+result = Atc.Slider_Match(target_base64=target_base64,
+                          background_base64=background_base64
+)
+
+print(result)
+```
+
+
+###  8. 阴影滑块类
+#### 目标图片
+<img src="https://free.picui.cn/free/2025/07/30/68897997591b9.jpg" width="400" height="200">
+
+#### 背景图片
+<img src="https://free.picui.cn/free/2025/07/30/68897997a65d7.jpg" width="400" height="200">
+
+```python
+# example.py
+
+import base64
+import AntiCAP
+
+# 读取滑块图片（小块）
+with open("target.jpg", "rb") as f:
+    target_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+# 读取背景图片（带缺口的大图）
+with open("background.jpg", "rb") as f:
+    background_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+
+Atc = AntiCAP.Handler(show_banner=True)
+
+result = Atc.Slider_Match(target_base64=target_base64,
+                          background_base64=background_base64
+)
+
+print(result)
+```
+
+###  9. 相似度对比
+#### 图片1
+<img src="https://free.picui.cn/free/2025/07/30/68897a1a09ecc.jpg" width="100" height="100">
+
+#### 图片2
+<img src="https://free.picui.cn/free/2025/07/30/68897a1a0b5b7.jpg" width="100" height="100">
+
+```python
+# example.py
+import base64
+import AntiCAP
+
+with open("image1.jpg", "rb") as f:
+    image1_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+with open("image2.jpg", "rb") as f:
+    image2_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+
+Atc = AntiCAP.Handler(show_banner=True)
+
+result = Atc.compare_image_similarity(image1_base64=image1_base64, image2_base64=image2_base64)
+
+print("相似度结果:", result)
+
+```
 
 # 🐧 QQ交流群
 
