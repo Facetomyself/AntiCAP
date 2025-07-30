@@ -44,8 +44,11 @@ python >=3.8  64bit
 ```
 pip install AntiCAP -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+<div align="center">
 
-## 🤖 调用
+## 🤖 调用说明
+
+</div>
 
 ###  1. 通用OCR识别
 #### 参考例图 (数字、大小写字母、汉字)
