@@ -72,6 +72,10 @@ result = Atc.OCR(img_base64=img_base64) #传入图片Base64编码字符串
 print(result) # 返回字符串 jepy
 ```
 
+---
+
+
+
 ###  2. 算术验证码识别
 #### 参考例图 (加减乘除类) 目前模型泛化能力较弱 等待更新
 <img src="https://free.picui.cn/free/2025/07/30/6889718adee8f.jpg">
@@ -94,6 +98,11 @@ result = Atc.Math(img_base64=img_base64) #传入图片Base64编码字符串
 print(result) #返回计算结果 8
 
 ```
+
+
+---
+
+
 
 ###  3. 图标侦测
 #### 参考例图
@@ -121,6 +130,11 @@ print(result)
 
 ```
 
+
+---
+
+
+
 ###  4. 文字侦测
 #### 参考例图
 <img src="https://free.picui.cn/free/2025/07/30/688974085b38e.jpg" width="200" height="200">
@@ -144,6 +158,12 @@ print(result)
 # [{'class': 'Text', 'box': [145.71, 19.21, 223.99, 95.7]}...]
 # box分别为 [x1, y1, x2, y2] 左上角和右下角坐标
 ```
+
+
+---
+
+
+
 
 ###  5. 图标点选类
 #### 提示图
@@ -175,6 +195,12 @@ result = Atc.ClickIcon_Order(
 print(result)
 ```
 
+
+
+---
+
+
+
 ###  6. 文字点选类
 #### 提示图
 <img src="https://free.picui.cn/free/2025/07/30/6889773219292.jpg" width="200" height="50">
@@ -204,6 +230,12 @@ result = Atc.ClickIcon_Order(
 
 print(result)
 ```
+
+
+
+---
+
+
 
 ###  7. 缺口滑块类
 #### 缺口图
@@ -237,6 +269,12 @@ print(result)
 ```
 
 
+
+---
+
+
+
+
 ###  8. 阴影滑块类
 #### 目标图片
 <img src="https://free.picui.cn/free/2025/07/30/68897997591b9.jpg" width="400" height="200">
@@ -268,6 +306,13 @@ result = Atc.Slider_Match(target_base64=target_base64,
 print(result)
 ```
 
+
+
+---
+
+
+
+
 ###  9. 相似度对比
 #### 图片1
 <img src="https://free.picui.cn/free/2025/07/30/68897a1a09ecc.jpg" width="100" height="100">
@@ -294,6 +339,11 @@ result = Atc.compare_image_similarity(image1_base64=image1_base64, image2_base64
 print("相似度结果:", result)
 
 ```
+
+
+---
+
+
 
 # 🐧 QQ交流群
 
