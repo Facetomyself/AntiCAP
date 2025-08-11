@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="https://free.picui.cn/free/2025/07/04/6867ef499899c.png" alt="logo" width="200" height="200">
+<img src="https://free.picui.cn/free/2025/08/11/6899bb5b91222.png" alt="logo" width="200" height="200">
 
 # AntiCAP
 
-<strong>Version:3.1.5</strong>
+<strong>Version:3.1.6</strong>
 
 
 | 类型         | 状态 | 描述                                    |
