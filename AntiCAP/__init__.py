@@ -16,8 +16,6 @@ from PIL import Image, ImageChops
 import requests
 import urllib.parse
 
-
-
 warnings.filterwarnings('ignore')
 onnxruntime.set_default_logger_severity(3)
 
@@ -62,9 +60,7 @@ class TypeError(Exception):
     pass
 
 
-
 class Handler(object):
-
     logging.getLogger('ultralytics').setLevel(logging.WARNING)
 
     def __init__(self, show_banner=True):
@@ -90,7 +86,6 @@ class Handler(object):
         model_path = os.path.join(current_dir, 'Models', '[OCR]Ddddocr.onnx')
         charset_path = os.path.join(current_dir, 'Models', 'charset.txt')
 
-
         try:
             with open(charset_path, 'r', encoding='utf-8') as f:
                 list_as_string = f.read()
@@ -100,15 +95,12 @@ class Handler(object):
         except Exception as e:
             raise ValueError(f"解析字符集文件时出错: {e}")
 
-
         providers = ['CUDAExecutionProvider'] if use_gpu and onnxruntime.get_device().upper() == 'GPU' else [
             'CPUExecutionProvider']
         session = onnxruntime.InferenceSession(model_path, providers=providers)
 
-
         img_data = base64.b64decode(img_base64)
         image = Image.open(io.BytesIO(img_data))
-
 
         image = image.resize((int(image.size[0] * (64 / image.size[1])), 64), Image.Resampling.LANCZOS).convert('L')
         image = np.array(image).astype(np.float32)
@@ -147,7 +139,8 @@ class Handler(object):
     # 算术识别
     def Math(self, img_base64: str, math_model_path: str = '', use_gpu: bool = False):
 
-        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Math]Detection_model.pt')
+        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Models',
+                                                          '[Math]Detection_model.pt')
 
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(math_model_path, verbose=False)
@@ -156,7 +149,6 @@ class Handler(object):
         image_bytes = base64.b64decode(img_base64)
         image = Image.open(io.BytesIO(image_bytes))
         results = model(image)
-
 
         sorted_elements = []
         for box in results[0].boxes:
@@ -186,7 +178,8 @@ class Handler(object):
 
     # 图标侦测
     def Detection_Icon(self, img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models', '[Icon]Detection_model.pt')
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models',
+                                                                            '[Icon]Detection_model.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionIcon_model_path, verbose=False)
         model.to(device)
@@ -208,68 +201,60 @@ class Handler(object):
 
         return detections
 
-
     # 按序侦测图标
-    def ClickIcon_Order(self, order_img_base64: str = None, target_img_base64: str = None,detectionIcon_model_path: str = '', sim_onnx_model_path: str = '',use_gpu: bool = False):
+    def ClickIcon_Order(self, order_img_base64: str, target_img_base64: str, detectionIcon_model_path: str = '',
+                        sim_onnx_model_path: str = '', use_gpu: bool = False, similarity_threshold: float = 0.6):
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models',
+                                                                            '[Icon]Detection_model.pt')
+        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
+                                                                  '[Text]Siamese_model.onnx')
 
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Icon]Detection_model.pt')
-        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Text]Siamese_model.onnx')
-
-        device = torch.device('cuda' if use_gpu else 'cpu')
-        model = YOLO(detectionIcon_model_path, verbose=False)
+        device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
+        model = YOLO(detectionIcon_model_path)
         model.to(device)
 
-
-        providers = ['CUDAExecutionProvider'] if use_gpu else ['CPUExecutionProvider']
+        providers = ['CUDAExecutionProvider'] if use_gpu and onnxruntime.get_device().upper() == 'GPU' else [
+            'CPUExecutionProvider']
         sim_session = onnxruntime.InferenceSession(sim_onnx_model_path, providers=providers)
         input_names = [inp.name for inp in sim_session.get_inputs()]
 
         def pil_to_tensor(img, size=(105, 105)):
-            img = img.resize(size)
+            img = img.convert("RGB").resize(size)
             img_np = np.asarray(img).astype(np.float32) / 255.0
             img_np = np.transpose(img_np, (2, 0, 1))  # HWC -> CHW
-            img_np = np.expand_dims(img_np, axis=0)
-            return img_np
+            return np.expand_dims(img_np, axis=0)
 
-        # 解码图片
         order_image = Image.open(io.BytesIO(base64.b64decode(order_img_base64))).convert("RGB")
         target_image = Image.open(io.BytesIO(base64.b64decode(target_img_base64))).convert("RGB")
 
-        # 图标检测
-        order_results = model(order_image)
-        target_results = model(target_image)
+        order_results = model(order_image, verbose=False)
+        target_results = model(target_image, verbose=False)
 
         order_boxes_list = []
-        target_boxes_list = []
-
         if order_results and order_results[0].boxes:
-            order_boxes = order_results[0].boxes.xyxy
-            order_boxes_list = order_boxes.cpu().numpy().tolist()
-            order_boxes_list.sort(key=lambda x: x[0])  # 从左到右排序
+            order_boxes = order_results[0].boxes.xyxy.cpu().numpy().tolist()
+            order_boxes.sort(key=lambda x: x[0])
+            order_boxes_list = order_boxes
 
+        target_boxes_list = []
         if target_results and target_results[0].boxes:
-            target_boxes = target_results[0].boxes.xyxy
-            target_boxes_list = target_boxes.cpu().numpy().tolist()
+            target_boxes_list = target_results[0].boxes.xyxy.cpu().numpy().tolist()
 
+        available_target_boxes = target_boxes_list.copy()
         best_matching_boxes = []
 
-
         for order_box in order_boxes_list:
-            order_crop = order_image.crop((order_box[0], order_box[1], order_box[2], order_box[3]))
+            order_crop = order_image.crop(order_box)
+            order_tensor = pil_to_tensor(order_crop)
+
             best_score = -1
             best_target_box = None
 
-            for target_box in target_boxes_list:
-                target_crop = target_image.crop((target_box[0], target_box[1], target_box[2], target_box[3]))
+            for target_box in available_target_boxes:
+                target_crop = target_image.crop(target_box)
+                target_tensor = pil_to_tensor(target_crop)
 
-                tensor1 = pil_to_tensor(order_crop)
-                tensor2 = pil_to_tensor(target_crop)
-
-                inputs = {
-                    input_names[0]: tensor1.astype(np.float32),
-                    input_names[1]: tensor2.astype(np.float32)
-                }
-
+                inputs = {input_names[0]: order_tensor, input_names[1]: target_tensor}
                 output = sim_session.run(None, inputs)
                 similarity_score = output[0][0][0]
 
@@ -277,28 +262,27 @@ class Handler(object):
                     best_score = similarity_score
                     best_target_box = target_box
 
-            if best_target_box:
+            if best_target_box and best_score >= similarity_threshold:
                 best_matching_boxes.append([int(coord) for coord in best_target_box])
+                available_target_boxes.remove(best_target_box)
             else:
-                best_matching_boxes.append([0, 0, 0, 0])  # fallback if no match
+                best_matching_boxes.append([0, 0, 0, 0])
 
         return best_matching_boxes
 
-
     # 文字侦测
     def Detection_Text(self, img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
-        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models', '[Text]Detection_model.pt')
+        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models',
+                                                                            '[Text]Detection_model.pt')
         device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
         model = YOLO(detectionText_model_path, verbose=False)
         model.to(device)
-
 
         image_bytes = base64.b64decode(img_base64)
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
 
         results = model(image)
 
-        # 构建返回结果（保留两位小数）
         detections = []
         for box in results[0].boxes:
             coords = box.xyxy[0].tolist()
@@ -311,87 +295,78 @@ class Handler(object):
 
         return detections
 
-
     # 按序侦测文字
-    def ClickText_Order(self, order_img_base64: str = None, target_img_base64: str = None,detectionText_model_path: str = '', sim_onnx_model_path: str = '',use_gpu: bool = False):
+    def ClickText_Order(self, order_img_base64: str, target_img_base64: str, detectionText_model_path: str = '',
+                        sim_onnx_model_path: str = '', use_gpu: bool = False, similarity_threshold: float = 0.6):
+        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models',
+                                                                            '[Text]Detection_model.pt')
+        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
+                                                                  '[Text]Siamese_model.onnx')
 
-
-        detectionText_model_path = detectionText_model_path or os.path.join(
-            os.path.dirname(__file__), 'Models', '[Text]Detection_model.pt'
-        )
-        sim_onnx_model_path = sim_onnx_model_path or os.path.join(
-            os.path.dirname(__file__), 'Models', '[Text]Siamese_model.onnx'
-        )
-
-        device = torch.device('cuda' if use_gpu else 'cpu')
-        model = YOLO(detectionText_model_path, verbose=False)
+        device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
+        model = YOLO(detectionText_model_path)
         model.to(device)
 
-        # 加载相似度模型（ONNX Siamese Model）
-        providers = ['CUDAExecutionProvider'] if use_gpu else ['CPUExecutionProvider']
+        providers = ['CUDAExecutionProvider'] if use_gpu and onnxruntime.get_device().upper() == 'GPU' else [
+            'CPUExecutionProvider']
         sim_session = onnxruntime.InferenceSession(sim_onnx_model_path, providers=providers)
         input_names = [inp.name for inp in sim_session.get_inputs()]
 
         def pil_to_tensor(img, size=(105, 105)):
-            img = img.resize(size)
+            img = img.convert("RGB").resize(size)
             img_np = np.asarray(img).astype(np.float32) / 255.0
             img_np = np.transpose(img_np, (2, 0, 1))  # HWC -> CHW
-            img_np = np.expand_dims(img_np, axis=0)
-            return img_np
+            return np.expand_dims(img_np, axis=0)
 
         order_image = Image.open(io.BytesIO(base64.b64decode(order_img_base64))).convert("RGB")
         target_image = Image.open(io.BytesIO(base64.b64decode(target_img_base64))).convert("RGB")
 
-        order_results = model(order_image)
-        target_results = model(target_image)
+        order_results = model(order_image, verbose=False)
+        target_results = model(target_image, verbose=False)
 
         order_boxes_list = []
-        target_boxes_list = []
-
         if order_results and order_results[0].boxes:
-            order_boxes = order_results[0].boxes.xyxy
-            order_boxes_list = order_boxes.cpu().numpy().tolist()
-            order_boxes_list.sort(key=lambda x: x[0])
+            order_boxes = order_results[0].boxes.xyxy.cpu().numpy().tolist()
+            order_boxes.sort(key=lambda x: x[0])
+            order_boxes_list = order_boxes
 
+        target_boxes_list = []
         if target_results and target_results[0].boxes:
-            target_boxes = target_results[0].boxes.xyxy
-            target_boxes_list = target_boxes.cpu().numpy().tolist()
+            target_boxes_list = target_results[0].boxes.xyxy.cpu().numpy().tolist()
 
+        available_target_boxes = target_boxes_list.copy()
         best_matching_boxes = []
 
         for order_box in order_boxes_list:
-            order_crop = order_image.crop((order_box[0], order_box[1], order_box[2], order_box[3]))
+            order_crop = order_image.crop(order_box)
+            order_tensor = pil_to_tensor(order_crop)
+
             best_score = -1
             best_target_box = None
 
-            for target_box in target_boxes_list:
-                target_crop = target_image.crop((target_box[0], target_box[1], target_box[2], target_box[3]))
+            for target_box in available_target_boxes:
+                target_crop = target_image.crop(target_box)
+                target_tensor = pil_to_tensor(target_crop)
 
-                tensor1 = pil_to_tensor(order_crop)
-                tensor2 = pil_to_tensor(target_crop)
-
-                inputs = {
-                    input_names[0]: tensor1.astype(np.float32),
-                    input_names[1]: tensor2.astype(np.float32)
-                }
-
+                inputs = {input_names[0]: order_tensor, input_names[1]: target_tensor}
                 output = sim_session.run(None, inputs)
-                similarity_score = output[0][0][0]  # 取出相似度值
+                similarity_score = output[0][0][0]
 
                 if similarity_score > best_score:
                     best_score = similarity_score
                     best_target_box = target_box
 
-            if best_target_box:
+            if best_target_box and best_score >= similarity_threshold:
                 best_matching_boxes.append([int(coord) for coord in best_target_box])
+                available_target_boxes.remove(best_target_box)
             else:
-                best_matching_boxes.append([0, 0, 0, 0])  # fallback
+                best_matching_boxes.append([0, 0, 0, 0])
 
         return best_matching_boxes
 
-
     # 缺口滑块
-    def Slider_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False, flag: bool = False):
+    def Slider_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False,
+                     flag: bool = False):
 
         def get_target(img_bytes: bytes = None):
             try:
@@ -440,13 +415,11 @@ class Handler(object):
                 if end_y == 0 and startty != 0:
                     end_y = h
 
-                # Ensure start and end points are valid
                 if starttx >= end_x or startty >= end_y:
-                    return None, 0, 0  # Or raise an exception
+                    return None, 0, 0
 
                 return image.crop([starttx, startty, end_x, end_y]), starttx, startty
             except Exception as e:
-                # print(f"Error in get_target: {e}")
                 return None, 0, 0
 
         def decode_base64_to_image(base64_string):
@@ -510,7 +483,6 @@ class Handler(object):
                 "target_y": target_y,
                 "target": [int(max_loc[0]), int(max_loc[1]), int(bottom_right[0]), int(bottom_right[1])]}
 
-
     # 阴影滑块
     def Slider_Comparison(self, target_base64: str = None, background_base64: str = None):
         def decode_base64_to_image(base64_string):
@@ -544,16 +516,16 @@ class Handler(object):
             "target": [start_x, start_y]
         }
 
-
     # 图像相似度比较 对比图片的中的文字
-    def compare_image_similarity(self,image1_base64: str = None,image2_base64: str = None,sim_onnx_model_path: str = '',use_gpu: bool = False):
+    def compare_image_similarity(self, image1_base64: str = None, image2_base64: str = None,
+                                 sim_onnx_model_path: str = '', use_gpu: bool = False):
 
-        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models', '[Text]Siamese_model.onnx')
+        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
+                                                                  '[Text]Siamese_model.onnx')
 
         def decode_base64_to_pil(b64str):
             img_bytes = base64.b64decode(b64str)
             return Image.open(io.BytesIO(img_bytes)).convert('RGB')
-
 
         def pil_to_numpy(img, size=(105, 105)):
             img = img.resize(size)
@@ -571,7 +543,6 @@ class Handler(object):
         # 设置推理设备
         providers = ['CUDAExecutionProvider'] if use_gpu else ['CPUExecutionProvider']
 
-
         ort_session = onnxruntime.InferenceSession(sim_onnx_model_path, providers=providers)
         input_names = [inp.name for inp in ort_session.get_inputs()]
 
@@ -584,4 +555,3 @@ class Handler(object):
         similarity = outputs[0][0][0]
 
         return similarity
-
