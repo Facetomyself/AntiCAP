@@ -202,8 +202,7 @@ class Handler(object):
         return detections
 
     # 按序侦测图标
-    def ClickIcon_Order(self, order_img_base64: str, target_img_base64: str, detectionIcon_model_path: str = '',
-                        sim_onnx_model_path: str = '', use_gpu: bool = False):
+    def ClickIcon_Order(self, order_img_base64: str, target_img_base64: str, detectionIcon_model_path: str = '',sim_onnx_model_path: str = '', use_gpu: bool = False):
         detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models',
                                                                             '[Icon]Detection_model.pt')
         sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
@@ -297,12 +296,11 @@ class Handler(object):
         return detections
 
     # 按序侦测文字
-    def ClickText_Order(self, order_img_base64: str, target_img_base64: str, detectionText_model_path: str = '',
-                        sim_onnx_model_path: str = '', use_gpu: bool = False):
-        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models',
-                                                                            '[Text]Detection_model.pt')
-        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
-                                                                  '[Text]Siamese_model.onnx')
+    def ClickText_Order(self, order_img_base64: str, target_img_base64: str, detectionText_model_path: str = '',sim_onnx_model_path: str = '', use_gpu: bool = False):
+
+        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Text]Detection_model.pt')
+
+        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Text]Siamese_model.onnx')
 
         device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
         model = YOLO(detectionText_model_path)
@@ -357,7 +355,6 @@ class Handler(object):
                     best_score = similarity_score
                     best_target_box = target_box
 
-            # 不再判断 >= 0.6，直接取最高分的 box
             if best_target_box:
                 best_matching_boxes.append([int(coord) for coord in best_target_box])
                 available_target_boxes.remove(best_target_box)
@@ -367,8 +364,7 @@ class Handler(object):
         return best_matching_boxes
 
     # 缺口滑块
-    def Slider_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False,
-                     flag: bool = False):
+    def Slider_Match(self, target_base64: str = None, background_base64: str = None, simple_target: bool = False,flag: bool = False):
 
         def get_target(img_bytes: bytes = None):
             try:
@@ -519,11 +515,9 @@ class Handler(object):
         }
 
     # 图像相似度比较 对比图片的中的文字
-    def compare_image_similarity(self, image1_base64: str = None, image2_base64: str = None,
-                                 sim_onnx_model_path: str = '', use_gpu: bool = False):
+    def compare_image_similarity(self, image1_base64: str = None, image2_base64: str = None,sim_onnx_model_path: str = '', use_gpu: bool = False):
 
-        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
-                                                                  '[Text]Siamese_model.onnx')
+        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Text]Siamese_model.onnx')
 
         def decode_base64_to_pil(b64str):
             img_bytes = base64.b64decode(b64str)
