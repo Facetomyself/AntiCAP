@@ -4,16 +4,17 @@ import io
 import os
 import re
 import cv2
+import ast
 import torch
 import base64
 import logging
 import warnings
-import ast
-import numpy as np
+import requests
 import onnxruntime
+import numpy as np
 from ultralytics import YOLO
 from PIL import Image, ImageChops
-import requests
+
 import urllib.parse
 
 warnings.filterwarnings('ignore')
@@ -272,8 +273,8 @@ class Handler(object):
 
     # 文字侦测
     def Detection_Text(self, img_base64: str = None, detectionText_model_path: str = '', use_gpu: bool = False):
-        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models',
-                                                                            '[Text]Detection_model.pt')
+
+        detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Text]Detection_model.pt')
         device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
         model = YOLO(detectionText_model_path, verbose=False)
         model.to(device)

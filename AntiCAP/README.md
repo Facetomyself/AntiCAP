@@ -4,7 +4,7 @@
 
 # AntiCAP
 
-<strong>Version:3.1.7</strong>
+<strong>Version:3.1.8</strong>
 
 
 | 类型         | 状态 | 描述                                    |
