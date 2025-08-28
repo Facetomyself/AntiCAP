@@ -203,7 +203,7 @@ class Handler(object):
 
     # 按序侦测图标
     def ClickIcon_Order(self, order_img_base64: str, target_img_base64: str, detectionIcon_model_path: str = '',
-                        sim_onnx_model_path: str = '', use_gpu: bool = False, similarity_threshold: float = 0.6):
+                        sim_onnx_model_path: str = '', use_gpu: bool = False):
         detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models',
                                                                             '[Icon]Detection_model.pt')
         sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
@@ -233,7 +233,7 @@ class Handler(object):
         order_boxes_list = []
         if order_results and order_results[0].boxes:
             order_boxes = order_results[0].boxes.xyxy.cpu().numpy().tolist()
-            order_boxes.sort(key=lambda x: x[0])
+            order_boxes.sort(key=lambda x: x[0])  # 按X坐标从左到右
             order_boxes_list = order_boxes
 
         target_boxes_list = []
@@ -262,7 +262,8 @@ class Handler(object):
                     best_score = similarity_score
                     best_target_box = target_box
 
-            if best_target_box and best_score >= similarity_threshold:
+            # 不再判断 >= similarity_threshold，直接取最高分
+            if best_target_box:
                 best_matching_boxes.append([int(coord) for coord in best_target_box])
                 available_target_boxes.remove(best_target_box)
             else:
@@ -297,7 +298,7 @@ class Handler(object):
 
     # 按序侦测文字
     def ClickText_Order(self, order_img_base64: str, target_img_base64: str, detectionText_model_path: str = '',
-                        sim_onnx_model_path: str = '', use_gpu: bool = False, similarity_threshold: float = 0.6):
+                        sim_onnx_model_path: str = '', use_gpu: bool = False):
         detectionText_model_path = detectionText_model_path or os.path.join(os.path.dirname(__file__), 'Models',
                                                                             '[Text]Detection_model.pt')
         sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
@@ -327,7 +328,7 @@ class Handler(object):
         order_boxes_list = []
         if order_results and order_results[0].boxes:
             order_boxes = order_results[0].boxes.xyxy.cpu().numpy().tolist()
-            order_boxes.sort(key=lambda x: x[0])
+            order_boxes.sort(key=lambda x: x[0])  # 左到右排序
             order_boxes_list = order_boxes
 
         target_boxes_list = []
@@ -356,7 +357,8 @@ class Handler(object):
                     best_score = similarity_score
                     best_target_box = target_box
 
-            if best_target_box and best_score >= similarity_threshold:
+            # 不再判断 >= 0.6，直接取最高分的 box
+            if best_target_box:
                 best_matching_boxes.append([int(coord) for coord in best_target_box])
                 available_target_boxes.remove(best_target_box)
             else:
