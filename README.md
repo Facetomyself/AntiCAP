@@ -385,17 +385,69 @@ print("相似度结果:", result)
 
 <br>
 
+# 🧬 自定义模型
+
+<div align="center">
+
+## 使用模型的函数均支持自定义模型
+
+</div>
+
+```python
+
+import AntiCAP
+
+Atc = AntiCAP.Handler(show_banner=True)
+
+
+result = Atc.Math(img_base64="",
+                  # math_model_path 参数为 .pt格式的yolo侦测模型
+                  math_model_path=r"C:\AntiCAP\model\yuor_math_model.pt")
+
+
+result = Atc.Detection_Icon(img_base64="",
+                            # text_model_path 参数为 .pt格式的yolo侦测模型
+                            detectionIcon_model_path=r"C:\AntiCAP\model\yuor_detectionIcon_model.pt")
+
+result = Atc.Detection_Text(img_base64="",
+                            # detectionText_model_path 参数为 .pt格式的yolo侦测模型
+                            detectionText_model_path=r"C:\AntiCAP\model\yuor_detectionText_model.pt")
+
+
+result = Atc.ClickText_Order(order_img_base64="",
+                             target_img_base64="",
+                             # text_model_path 参数为 .pt格式的yolo侦测模型
+                             detectionText_model_path=r"C:\AntiCAP\model\yuor_detectionTcon_model.pt",
+                             # sim_onnx_model_path为 .onnx格式的孪生神经网络模型
+                             sim_onnx_model_path=r"C:\AntiCAP\model\your_sim_onnx_model.onnx") 
+
+
+result = Atc.ClickIcon_Order(order_img_base64="",
+                             target_img_base64="",
+                             # text_model_path 参数为 .pt格式的yolo侦测模型
+                             detectionIcon_model_path=r"C:\AntiCAP\model\yuor_detectionIcon_model.pt",
+                             # sim_onnx_model_path为 .onnx格式的孪生神经网络模型
+                             sim_onnx_model_path=r"C:\AntiCAP\model\your_sim_onnx_model.onnx") 
+
+
+result = Atc.compare_image_similarity(image1_base64="",
+                                      image2_base64="",
+                                      # sim_onnx_model_path为 .onnx格式的孪生神经网络模型
+                                      sim_onnx_model_path=r"C:\AntiCAP\model\your_sim_onnx_model.onnx")
+
+```
+
+
+
 # 💪🏼 模型训练
 
 <br>
 
 <div align="center">
 
-<img src="https://free.picui.cn/free/2025/07/04/6867f0684ff6e.png" width="200" height="200">
+知识星球逐步更新：https://t.zsxq.com/Mwjpr
 
-<strong>https://github.com/81NewArk/AntiCAP_trainer</strong>
-
-根据自身要求训练模型 无缝衔接下一个 下一个更乖。
+星球收入用于项目维护及更新。 为避免星球收20%手续费 可以私我VX拉进去。
 
 </div>
 

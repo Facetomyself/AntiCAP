@@ -140,8 +140,7 @@ class Handler(object):
     # 算术识别
     def Math(self, img_base64: str, math_model_path: str = '', use_gpu: bool = False):
 
-        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Models',
-                                                          '[Math]Detection_model.pt')
+        math_model_path = math_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Math]Detection_model.pt')
 
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(math_model_path, verbose=False)
@@ -179,8 +178,7 @@ class Handler(object):
 
     # 图标侦测
     def Detection_Icon(self, img_base64: str = None, detectionIcon_model_path: str = '', use_gpu: bool = False):
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models',
-                                                                            '[Icon]Detection_model.pt')
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Icon]Detection_model.pt')
         device = torch.device('cuda' if use_gpu else 'cpu')
         model = YOLO(detectionIcon_model_path, verbose=False)
         model.to(device)
@@ -204,10 +202,8 @@ class Handler(object):
 
     # 按序侦测图标
     def ClickIcon_Order(self, order_img_base64: str, target_img_base64: str, detectionIcon_model_path: str = '',sim_onnx_model_path: str = '', use_gpu: bool = False):
-        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models',
-                                                                            '[Icon]Detection_model.pt')
-        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models',
-                                                                  '[Text]Siamese_model.onnx')
+        detectionIcon_model_path = detectionIcon_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Icon]Detection_model.pt')
+        sim_onnx_model_path = sim_onnx_model_path or os.path.join(os.path.dirname(__file__), 'Models','[Text]Siamese_model.onnx')
 
         device = torch.device('cuda' if use_gpu and torch.cuda.is_available() else 'cpu')
         model = YOLO(detectionIcon_model_path)
