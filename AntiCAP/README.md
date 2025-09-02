@@ -57,11 +57,11 @@
 
 ---
 
-<div align="center">
+
 
 ## 🧑‍⚖️ 免责声明
 
-</div>
+
 
 
 本项目基于 MIT 开源协议 发布，欢迎自由使用、修改和分发，但必须遵守中华人民共和国法律法规。
@@ -81,11 +81,11 @@
 
 <br>
 
-<div align="center">
+
 
 # 📄 AntiCAP 文档
 
-</div>
+
 
 ## 🌍环境说明
 
@@ -100,11 +100,11 @@ python >=3.8  64bit
 ```
 pip install AntiCAP -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
-<div align="center">
+
 
 ## 🤖 调用说明
 
-</div>
+
 
 ###  1. 通用OCR识别
 #### 参考例图 (数字、大小写字母、汉字)
@@ -429,11 +429,11 @@ print(result)
 
 ## 🧬 自定义模型
 
-<div align="center">
+
 
 ## 使用模型的函数均支持自定义模型
 
-</div>
+
 
 ```python
 
@@ -493,7 +493,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 </div>
 
-<br>
+
 
 
 
@@ -515,6 +515,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 
 # 🚬 请作者抽一包香香软软的利群
+
 <br>
 
 <div align="center">
