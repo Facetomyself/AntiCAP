@@ -524,7 +524,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 </div>
 
-<h1 id="致谢名单" align="center">😚 致谢名单</h1>
+<h1 id="致谢名单">😚 致谢名单</h1>
 
 
 <strong>这份荣光我不会独享</strong>
