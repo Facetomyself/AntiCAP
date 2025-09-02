@@ -30,10 +30,10 @@
 
 </div>
 
-### [🧑‍⚖️ 免责声明](#免责声明)
-### [📄 AntiCAP 文档](#anticap-文档)
-- [🌍 环境说明](#环境说明)
-- [📁 安装](#安装)
+- [🧑‍⚖️ 免责声明](#免责声明)
+- [📄 AntiCAP 文档](#anticap-文档)
+  - [🌍 环境说明](#环境说明)
+  - [📁 安装](#安装)
 - [🤖 调用说明](#调用说明)
   - [1. 通用OCR识别](#1-通用ocr识别)
   - [2. 算术验证码识别](#2-算术验证码识别)
@@ -83,7 +83,7 @@
 
 
 
-# 📄 AntiCAP 文档
+<h1 id="anticap-文档" align="center">📄 AntiCAP 文档</h1>
 
 
 
@@ -102,7 +102,7 @@ pip install AntiCAP -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 
-## 🤖 调用说明
+<h2 id="调用说明" align="center">🤖 调用说明</h2>
 
 
 
@@ -427,7 +427,7 @@ print(result)
 
 ```
 
-## 🧬 自定义模型
+<h2 id="自定义模型" align="center">🧬 自定义模型</h2>
 
 
 
@@ -479,15 +479,14 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 ```
 
----
 
-
-
-# 🐧 QQ交流群
+<h1 id="qq交流群" align="center">🐧 QQ交流群</h1>
 
 <br>
 
 <div align="center">
+```
+
 
 <img src="https://free.picui.cn/free/2025/07/04/6867f1907d1a0.png" alt="QQGroup" width="200" height="200">
 
@@ -498,7 +497,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 
 
-# 💪🏼 模型训练
+<h1 id="模型训练" align="center">💪🏼 模型训练</h1>
 
 <br>
 
@@ -514,7 +513,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 </div>
 
 
-# 🚬 请作者抽一包香香软软的利群
+<h1 id="请作者抽一包香香软软的利群" align="center">🚬 请作者抽一包香香软软的利群</h1>
 
 <br>
 
@@ -525,7 +524,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 </div>
 
-# 😚 致谢名单
+<h1 id="致谢名单" align="center">😚 致谢名单</h1>
 
 
 <strong>这份荣光我不会独享</strong>
@@ -550,7 +549,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 
 
-# 📚 参考文献
+<h1 id="参考文献" align="center">📚 参考文献</h1>
 
 [1] Github. 2025.03.28 https://github.com/sml2h3
 
@@ -568,6 +567,8 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 
 [6] YRL's Blog. 2025.03.28 https://blog.2zxz.com/archives/icondetection
+
+
 
 
 
