@@ -480,12 +480,12 @@ result = Atc.compare_image_similarity(image1_base64="",
 ```
 
 
-<h1 id="qq交流群" align="center">🐧 QQ交流群</h1>
+<h1 id="qq交流群" >🐧 QQ交流群</h1>
 
 <br>
 
 <div align="center">
-```
+
 
 
 <img src="https://free.picui.cn/free/2025/07/04/6867f1907d1a0.png" alt="QQGroup" width="200" height="200">
@@ -497,7 +497,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 
 
-<h1 id="模型训练" align="center">💪🏼 模型训练</h1>
+<h1 id="模型训练" >💪🏼 模型训练</h1>
 
 <br>
 
@@ -513,7 +513,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 </div>
 
 
-<h1 id="请作者抽一包香香软软的利群" align="center">🚬 请作者抽一包香香软软的利群</h1>
+<h1 id="请作者抽一包香香软软的利群" >🚬 请作者抽一包香香软软的利群</h1>
 
 <br>
 
