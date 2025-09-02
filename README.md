@@ -24,8 +24,11 @@
 </div>
 
 ---
+<div align="center">
 
 ## 📑 目录
+
+</div>
 
 ### [🧑‍⚖️ 免责声明](#-免责声明)
 ### [📄 AntiCAP 文档](#-anticap-文档)
