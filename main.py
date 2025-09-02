@@ -32,6 +32,9 @@ if __name__ == '__main__':
     # 图像相似度对比 图片中的文字
     result= Atc.compare_image_similarity(image1_base64="", image2_base64="")
 
+    # 双旋转
+    result= Atc.compare_image_similarity(image1_base64="", image2_base64="")
+
 
     print(result)
 

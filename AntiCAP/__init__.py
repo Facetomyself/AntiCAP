@@ -5,6 +5,7 @@ import os
 import re
 import cv2
 import ast
+import math
 import torch
 import base64
 import logging
@@ -548,3 +549,134 @@ class Handler(object):
         similarity = outputs[0][0][0]
 
         return similarity
+
+
+    # 双旋转
+    def Double_Rotate(self,inside_base64: str, outside_base64: str, check_pixel: int = 10, speed_ratio: float = 1,grayscale: bool = False, anticlockwise: bool = False, cut_pixel_value: int = 0, ):
+        image_array_inner = np.asarray(bytearray(base64.b64decode(inside_base64)), dtype="uint8")
+        inner_image = cv2.imdecode(image_array_inner, 1)
+        if grayscale:
+            inner_image = cv2.cvtColor(inner_image, cv2.COLOR_BGR2GRAY)
+
+        image_array_outer = np.asarray(bytearray(base64.b64decode(outside_base64)), dtype="uint8")
+        outer_image = cv2.imdecode(image_array_outer, 1)
+        if grayscale:
+            outer_image = cv2.cvtColor(outer_image, cv2.COLOR_BGR2GRAY)
+
+        cut_pixel_list_inner = []
+        height_inner, width_inner = inner_image.shape[:2]
+        for rotate_count in range(4):
+            cut_pixel = 0
+            rotate_array = np.rot90(inner_image, rotate_count).copy()
+            for line in rotate_array:
+                if len(line.shape) == 1:  # grayscale
+                    pixel_set = set(line.tolist()) - {0, 255}
+                else:  # color
+                    pixel_set = set(map(tuple, line)) - {(0, 0, 0), (255, 255, 255)}
+                if not pixel_set:
+                    cut_pixel += 1
+                else:
+                    break  # 遇到非空像素就停止
+            cut_pixel_list_inner.append(cut_pixel)
+
+        cut_pixel_list_inner[2] = height_inner - cut_pixel_list_inner[2]
+        cut_pixel_list_inner[3] = width_inner - cut_pixel_list_inner[3]
+        up_inner, left_inner, down_inner, right_inner = cut_pixel_list_inner
+
+        cut_array_inner = inner_image[up_inner:down_inner, left_inner:right_inner]
+        if cut_array_inner.size == 0:
+            raise ValueError("cut_array_inner is empty, check input image or cut logic.")
+
+        diameter_inner = (min(cut_array_inner.shape[:2]) // 2) * 2
+        cut_inner_image = cv2.resize(cut_array_inner, dsize=(diameter_inner, diameter_inner))
+        cut_inner_radius = cut_inner_image.shape[0] // 2
+
+        cut_pixel_list_outer = []
+        height_outer, width_outer = outer_image.shape[:2]
+        y, x = height_outer // 2, width_outer // 2
+        resize_check_pixel = int(math.ceil(cut_inner_radius / (cut_inner_radius - check_pixel) * check_pixel))
+        for i in (-1, 1):
+            for p in (y, x):
+                pos = p + i * cut_inner_radius
+                for _ in range(p - cut_inner_radius):
+                    p_x, p_y = (pos, y) if len(cut_pixel_list_outer) % 2 else (x, pos)
+                    pixel_point = outer_image[p_y][p_x]
+                    if isinstance(pixel_point, np.uint8):
+                        pixel_set = {int(pixel_point)} - {0, 255}
+                    else:
+                        pixel_set = {tuple(pixel_point)} - {(0, 0, 0), (255, 255, 255)}
+                    if not pixel_set:
+                        pos += i
+                        continue
+                    status = True
+                    for pixel in pixel_set:
+                        if isinstance(pixel, int):
+                            if pixel <= cut_pixel_value or pixel >= 255 - cut_pixel_value:
+                                status = False
+                                break
+                        else:  # tuple RGB
+                            if any(v <= cut_pixel_value or v >= 255 - cut_pixel_value for v in pixel):
+                                status = False
+                                break
+                    if status:
+                        break
+                    pos += i
+                cut_pixel_list_outer.append(pos + i * resize_check_pixel)
+
+        up_outer, left_outer, down_outer, right_outer = cut_pixel_list_outer
+
+        cut_array_outer = outer_image[up_outer:down_outer, left_outer:right_outer]
+        if cut_array_outer.size == 0:
+            raise ValueError("cut_array_outer is empty, check input image or cut logic.")
+
+        diameter_outer = (min(cut_array_outer.shape[:2]) // 2) * 2
+        cut_outer_image = cv2.resize(cut_array_outer, dsize=(diameter_outer, diameter_outer))
+
+        radius_inner = cut_inner_image.shape[0] // 2
+        center_point_inner = (radius_inner, radius_inner)
+        mask_inner = np.zeros((radius_inner * 2, radius_inner * 2), dtype=np.uint8)
+        cv2.circle(mask_inner, center_point_inner, radius_inner, 255, -1)
+        cv2.circle(mask_inner, center_point_inner, radius_inner - check_pixel, 0, -1)
+        src_array_inner = np.zeros_like(cut_inner_image)
+        inner_annulus = cv2.add(cut_inner_image, src_array_inner, mask=mask_inner)
+
+        radius_outer = cut_outer_image.shape[0] // 2
+        center_point_outer = (radius_outer, radius_outer)
+        mask_outer = np.zeros((radius_outer * 2, radius_outer * 2), dtype=np.uint8)
+        cv2.circle(mask_outer, center_point_outer, radius_outer, 255, -1)
+        cv2.circle(mask_outer, center_point_outer, radius_outer - check_pixel, 0, -1)
+        src_array_outer = np.zeros_like(cut_outer_image)
+        outer_annulus = cv2.add(cut_outer_image, src_array_outer, mask=mask_outer)
+
+        rotate_info_list = [{'similar': 0, 'angle': 0, 'start': 1, 'end': 361, 'step': 10}]
+        rtype = -1 if anticlockwise else 1
+        h, w = inner_annulus.shape[:2]
+
+        for item in rotate_info_list:
+            for angle in range(item['start'], item['end'], item['step']):
+                mat_rotate = cv2.getRotationMatrix2D((h * 0.5, w * 0.5), rtype * angle, 1)
+                dst = cv2.warpAffine(inner_annulus, mat_rotate, (h, w))
+                ret = cv2.matchTemplate(outer_annulus, dst, cv2.TM_CCOEFF_NORMED)
+                similar_value = cv2.minMaxLoc(ret)[1]
+                if similar_value < min(rotate_info_list, key=lambda x: x['similar'])['similar']:
+                    continue
+                rotate_info = {
+                    'similar': similar_value,
+                    'angle': angle,
+                    'start': angle - 10,
+                    'end': angle + 10,
+                    'step': 10
+                }
+                rotate_info_list.append(rotate_info)
+                if len(rotate_info_list) > 5:
+                    min_index = min(range(len(rotate_info_list)), key=lambda i: rotate_info_list[i]['similar'])
+                    rotate_info_list.pop(min_index)
+
+        best_rotate_info = max(rotate_info_list, key=lambda x: x['similar'])
+
+        inner_angle = round(best_rotate_info['angle'] * speed_ratio / (speed_ratio + 1), 2)
+        return {
+            "similarity": best_rotate_info['similar'],
+            "inner_angle": inner_angle,
+            "raw_angle": best_rotate_info['angle']
+        }

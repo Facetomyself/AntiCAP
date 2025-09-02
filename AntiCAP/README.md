@@ -4,19 +4,20 @@
 
 # AntiCAP
 
-<strong>Version:3.1.8</strong>
+<strong>Version:3.1.9</strong>
 
 
 
-| 类型         | 状态 | 描述                                    |
-|------------|-|---------------------------------------|
-| `OCR识别`    |✅| 返回图片字符串                               |
-| `数学计算`     |✅| 返回计算结果                                |
-| `缺口滑块`     |✅| 返回坐标                                  |
-| `阴影滑块`     |✅| 返回坐标                                  |
-| `图标点选`     |✅| 侦测图标位置 或 按序返回坐标                       |
-| `文字点选`     |✅| 侦测文字位置 或 按序返回坐标                       |
-| `相似对比`     |✅| 图片中文字的相似度对比                           |
+| 类型         | 状态 | 描述                                         |
+|------------|-|--------------------------------------------|
+| `OCR识别`    |✅| 返回图片字符串                                    |
+| `数学计算`     |✅| 返回计算结果                                     |
+| `缺口滑块`     |✅| 返回坐标                                       |
+| `阴影滑块`     |✅| 返回坐标                                       |
+| `图标点选`     |✅| 侦测图标位置 或 按序返回坐标                            |
+| `文字点选`     |✅| 侦测文字位置 或 按序返回坐标                            |
+| `相似对比`     |✅| 图片中文字的相似度对比                                |
+| `双旋转验证码`   |✅| 返回角度                                       |
 | `WebApi服务` | ✅ | https://github.com/81NewArk/AntiCAP-WebApi |
 
 
@@ -357,6 +358,36 @@ print("相似度结果:", result)
 
 ```
 
+
+###  10. 双旋转类验证码
+#### 内圈
+<img src="https://free.picui.cn/free/2025/09/02/68b6642405a61.png" width="100" height="100">
+
+#### 外圈
+<img src="https://free.picui.cn/free/2025/09/02/68b6642400acd.png" width="300" height="150">
+
+```python
+# example.py
+
+import base64
+import AntiCAP
+
+with open("inside.jpg", "rb") as f:
+    inside_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+with open("outside.jpg", "rb") as f:
+    outside_base64 = base64.b64encode(f.read()).decode('utf-8')
+
+
+Atc = AntiCAP.Handler(show_banner=True)
+
+result= Atc.Double_Rotate(inside_base64=inside_base64, outside_base64=outside_base64)
+
+print(result)
+
+# {'similarity': 0.6651270985603333, 'inner_angle': 75.5, 'raw_angle': 151}
+
+```
 
 ---
 
