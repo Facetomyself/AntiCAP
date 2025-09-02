@@ -21,10 +21,44 @@
 | `WebApi服务` | ✅ | https://github.com/81NewArk/AntiCAP-WebApi |
 
 
-
 </div>
 
-## 免责声明
+---
+
+## 📑 目录
+
+### [🧑‍⚖️ 免责声明](#-免责声明)
+### [📄 AntiCAP 文档](#-anticap-文档)
+-  [🌍 环境说明](#-环境说明)
+-  [📁 Pypi 安装](#-安装)
+
+#### [🤖 调用说明](#-调用说明)
+- [1. 通用OCR识别](#-1-通用ocr识别)
+- [2. 算术验证码识别](#-2-算术验证码识别)
+- [3. 图标侦测](#-3-图标侦测)
+- [4. 文字侦测](#-4-文字侦测)
+- [5. 图标点选类](#-5-图标点选类)
+- [6. 文字点选类](#-6-文字点选类)
+- [7. 缺口滑块类](#-7-缺口滑块类)
+- [8. 阴影滑块类](#-8-阴影滑块类)
+- [9. 相似度对比](#-9-相似度对比)
+- [10. 双图旋转类验证码](#-10-双旋转类验证码)
+
+
+#### [🧬 自定义模型](#-自定义模型)
+
+### [🐧 QQ交流群](#-qq交流群)
+### [💪🏼 模型训练](#-模型训练)
+### [🚬 请作者抽一包香香软软的利群](#-请作者抽一包香香软软的利群)
+### [😚 致谢名单](#-致谢名单)
+### [📚 参考文献](#-参考文献)
+
+
+---
+
+
+
+## 🧑‍⚖️ 免责声明
 
 本项目基于 MIT 开源协议 发布，欢迎自由使用、修改和分发，但必须遵守中华人民共和国法律法规。
 
@@ -389,33 +423,7 @@ print(result)
 
 ```
 
----
-
-
-
-# 🐧 QQ交流群
-
-<br>
-
-<div align="center">
-
-<img src="https://free.picui.cn/free/2025/07/04/6867f1907d1a0.png" alt="QQGroup" width="200" height="200">
-
-</div>
-
-# 🚬 请作者抽一包香香软软的利群
-<br>
-
-<div align="center">
-
-<img src="https://free.picui.cn/free/2025/07/04/6867efd0bd67e.png" alt="Ali" width="200" height="200">
-<img src="https://free.picui.cn/free/2025/07/04/6867efd0d7cbb.png" alt="Wx" width="200" height="200">
-
-</div>
-
-<br>
-
-# 🧬 自定义模型
+## 🧬 自定义模型
 
 <div align="center">
 
@@ -467,6 +475,23 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 ```
 
+---
+
+
+
+# 🐧 QQ交流群
+
+<br>
+
+<div align="center">
+
+<img src="https://free.picui.cn/free/2025/07/04/6867f1907d1a0.png" alt="QQGroup" width="200" height="200">
+
+</div>
+
+<br>
+
+
 
 
 # 💪🏼 模型训练
@@ -481,6 +506,17 @@ result = Atc.compare_image_similarity(image1_base64="",
 ### 星球收入用于项目维护及更新。 
 ### 为避免星球收20%手续费 可以私我VX拉进去。
 
+
+</div>
+
+
+# 🚬 请作者抽一包香香软软的利群
+<br>
+
+<div align="center">
+
+<img src="https://free.picui.cn/free/2025/07/04/6867efd0bd67e.png" alt="Ali" width="200" height="200">
+<img src="https://free.picui.cn/free/2025/07/04/6867efd0d7cbb.png" alt="Wx" width="200" height="200">
 
 </div>
 
