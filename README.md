@@ -549,7 +549,7 @@ result = Atc.compare_image_similarity(image1_base64="",
 
 
 
-<h1 id="参考文献" align="center">📚 参考文献</h1>
+<h1 id="参考文献">📚 参考文献</h1>
 
 [1] Github. 2025.03.28 https://github.com/sml2h3
 
