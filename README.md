@@ -397,7 +397,7 @@ print("相似度结果:", result)
 ```
 
 
-###  10. 双旋转类验证码
+###  10. 双图旋转类验证码
 #### 内圈
 <img src="https://free.picui.cn/free/2025/09/02/68b6642405a61.png" width="100" height="100">
 
